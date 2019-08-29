@@ -227,12 +227,19 @@ EPT.Lang = {
       'FONT': 'montserratbold',
       'menu-intro': 'Choose armies\nand start the game',
       'settings': 'Settings',
-      'copyright-title': 'Copyright notice',
-      'copyright-description': '\
-All rights to the images of the tiles from the\n\
-Neuroshima Hex board game belongs to its creator\n\
-and publisher: Portal Games. This app is free\n\
-and created by the community for the community.',
+      'copy-title': 'Copyright',
+      'copy-description1': '\
+All rights to the images of the\n\
+tiles from the Neuroshima Hex\n\
+board game belongs to its creator\n\
+and publisher: Portal Games.',
+      'copy-description2': '\
+This app is free and created\n\
+by the community\n\
+for the community.',
+      'copy-description3': '\
+It was developed by the\n\
+Enclave Games team.',
       'thanks': 'Thank you for being\nWeb Monetized power user\nand supporting EPT!',
       'credits': 'Credits',
       'madeby': 'EPT made by',
@@ -241,8 +248,8 @@ and created by the community for the community.',
       'design': 'design',
       'testing': 'testing',
       'musicby': 'Music by',
-      'selection1': 'Chose 1st army',
-      'selection2': 'Chose 2nd army'
+      'selection1': 'Choose 1st army',
+      'selection2': 'Choose 2nd army'
     },
     'pl': {
       'FONT': 'Arial',

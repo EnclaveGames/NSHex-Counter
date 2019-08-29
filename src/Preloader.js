@@ -37,6 +37,9 @@ class Preloader extends Phaser.Scene {
 				['img-navbar', 'img/img-navbar.png'],
 				['img-tabbar', 'img/img-tabbar.png'],
 				['img-seethru', 'img/img-seethru.png'],
+				['logo-portalgames', 'img/logo-portalgames.png'],
+				['logo-neuroshimahexpl', 'img/logo-neuroshimahexpl.png'],
+				['logo-enclavegames', 'img/logo-enclave-black.png'],
 
 				['hex-border-color', 'img/hex-border-color.png'],
 				['hex-border-pattern', 'img/hex-border-pattern.png'],
@@ -53,6 +56,13 @@ class Preloader extends Phaser.Scene {
 				['button-sound-off', 'img/button-sound-off.png', {frameWidth:160,frameHeight:85}],
 				['button-music-on', 'img/button-music-on.png', {frameWidth:160,frameHeight:85}],
 				['button-music-off', 'img/button-music-off.png', {frameWidth:160,frameHeight:85}],
+
+				['button-copyright', 'img/button-copyright.png', {frameWidth:300,frameHeight:85}],
+				['button-language', 'img/button-language.png', {frameWidth:300,frameHeight:85}],
+				['button-language-english-on', 'img/button-language-english-on.png', {frameWidth:300,frameHeight:85}],
+				['button-language-english-off', 'img/button-language-english-off.png', {frameWidth:300,frameHeight:85}],
+				['button-language-polish-on', 'img/button-language-polish-on.png', {frameWidth:300,frameHeight:85}],
+				['button-language-polish-off', 'img/button-language-polish-off.png', {frameWidth:300,frameHeight:85}],
 
 				['button-small', 'img/button-small2.png', {frameWidth:120,frameHeight:44}],
 				['button-undo', 'img/button-undo.png', {frameWidth:45,frameHeight:49}],
@@ -113,8 +123,8 @@ class Preloader extends Phaser.Scene {
     create() {
 		EPT.Sfx.manage('music', 'init', this);
 		EPT.Sfx.manage('sound', 'init', this);
-		EPT._player[1] = 16; // 0 - moloch, 9 - dancer
-		EPT._player[2] = 9; // 3 - outpost, 16 - iron gang
-		EPT.fadeOutScene('Game', this);
+		// EPT._player[1] = 16; // 0 - moloch, 9 - dancer
+		// EPT._player[2] = 9; // 3 - outpost, 16 - iron gang
+		EPT.fadeOutScene('MainMenu', this);
 	}
 }

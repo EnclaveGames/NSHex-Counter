@@ -22,19 +22,16 @@ class Settings extends Phaser.Scene {
 		this.containerSettingsBar = this.add.container(0, 0);
 		this.containerSettingsBar.add([this.navbar,this.buttonBack,this.titleSettings]);
 
-		this.buttonSound = new Button(EPT.world.centerX-100, 250, 'button-sound-on', this.clickSound, this);
-		this.buttonSound.setOrigin(0.5, 0.5);
-		this.buttonMusic = new Button(EPT.world.centerX+100, 250, 'button-music-on', this.clickMusic, this);
-		this.buttonMusic.setOrigin(0.5, 0.5);
-		this.buttonCredits = new Button(EPT.world.centerX, 400, 'button-credits', this.clickCredits, this);
-		this.buttonCredits.setOrigin(0.5, 0.5);
-		this.buttonMore = new Button(EPT.world.centerX, 550, 'button-more', this.clickMore, this);
-		this.buttonMore.setOrigin(0.5, 0.5);
+		this.buttonSound = new Button(EPT.world.centerX-100, 250, 'button-sound-on', this.clickSound, this).setOrigin(0.5);
+		this.buttonMusic = new Button(EPT.world.centerX+100, 250, 'button-music-on', this.clickMusic, this).setOrigin(0.5);
+		this.buttonCredits = new Button(EPT.world.centerX, 400, 'button-credits', this.clickCredits, this).setOrigin(0.5);
+		this.buttonCopy = new Button(EPT.world.centerX, 550, 'button-copyright', this.clickCopy, this).setOrigin(0.5);
+		this.buttonMore = new Button(EPT.world.centerX, 700, 'button-more', this.clickMore, this).setOrigin(0.5);
 
-		this.textCopyrightTitle = this.add.text(EPT.world.centerX, EPT.world.height-300, EPT.text['copyright-title'], fontTiny);
-		this.textCopyrightTitle.setOrigin(0.5, 0);
-		this.textCopyrightDescription = this.add.text(EPT.world.centerX, EPT.world.height-270, EPT.text['copyright-description'], fontTiny);
-		this.textCopyrightDescription.setOrigin(0.5, 0);
+		// this.textCopyrightTitle = this.add.text(EPT.world.centerX, EPT.world.height-300, EPT.text['copyright-title'], fontTiny);
+		// this.textCopyrightTitle.setOrigin(0.5, 0);
+		// this.textCopyrightDescription = this.add.text(EPT.world.centerX, EPT.world.height-270, EPT.text['copyright-description'], fontTiny);
+		// this.textCopyrightDescription.setOrigin(0.5, 0);
 
         this.bannerBeer = new Button(EPT.world.centerX, EPT.world.height-60, 'banner-beer', this.clickBeer, this, 'static');
 		this.bannerBeer.setOrigin(0.5, 1);
@@ -61,7 +58,7 @@ class Settings extends Phaser.Scene {
 		this.creditsBack = new Button(20, 25, 'button-back', function(){this.clickBack('credits');}, this, 'noframes');
 		this.creditsBack.setOrigin(0, 0);
 
-		this.titleCredits = this.add.text(EPT.world.centerX, offsetTopCredits+45, EPT.text['credits'], fontTitle);
+		this.titleCredits = this.add.text(EPT.world.centerX, offsetTopCredits+25, EPT.text['credits'], fontTitle);
 		this.titleCredits.setOrigin(0.5, 0.5);	
 
 		// this.containerCreditsBar = this.add.container(0, 0);
@@ -92,6 +89,20 @@ class Settings extends Phaser.Scene {
 		this.containerCredits.add([creditsBg,this.navbarCredits,this.creditsBack,this.titleCredits,titleCreditsText,this.titleCreditsLogo,titleCreditsUrl]);
 		this.containerCredits.add([titleCrew,titleCrewAndrzej,titleCrewEwa,titleCrewKasia,titleCreditsMusic]);
 
+		this.containerCopy = this.add.container(0, EPT.world.height);
+		var copyBg = this.add.sprite(0, 0, 'background').setOrigin(0, 0);
+		this.navbarCopy = this.add.sprite(0, 0, 'img-navbar').setOrigin(0);
+		this.copyBack = new Button(20, 25, 'button-back', function(){this.clickBack('copy');}, this, 'noframes').setOrigin(0, 0);
+		this.titleCopy = this.add.text(EPT.world.centerX, 45, EPT.text['copy-title'], fontTitle).setOrigin(0.5, 0.5);	
+		this.titleCopyText1 = this.add.text(EPT.world.centerX, 150, EPT.text['copy-description1'], fontSmall).setOrigin(0.5,0);
+		this.logoPortalGames = new Button(EPT.world.centerX, 370, 'logo-portalgames', this.clickPortal, this, 'noframes').setOrigin(0.5, 0.5);
+		this.titleCopyText2 = this.add.text(EPT.world.centerX, 470, EPT.text['copy-description2'], fontSmall).setOrigin(0.5,0);
+		this.logoNeuroshimaHexpl = new Button(EPT.world.centerX, 630, 'logo-neuroshimahexpl', this.clickNeuroshimaHexpl, this, 'noframes').setOrigin(0.5, 0.5);
+		this.titleCopyText3 = this.add.text(EPT.world.centerX, 700, EPT.text['copy-description3'], fontSmall).setOrigin(0.5,0);
+		this.logoEnclaveGames = new Button(EPT.world.centerX, 850, 'logo-enclavegames', this.clickEnclave, this, 'noframes').setOrigin(0.5, 0.5);
+		this.containerCopy.add([copyBg,this.navbarCopy,this.copyBack,this.titleCopy,this.titleCopyText1,this.logoPortalGames]);
+		this.containerCopy.add([this.titleCopyText2,this.logoNeuroshimaHexpl,this.titleCopyText3,this.logoEnclaveGames]);
+
 		this.cameras.main.fadeIn(250);
 	}
 	clickSound() {
@@ -103,22 +114,16 @@ class Settings extends Phaser.Scene {
 		EPT.Sfx.manage('music', 'switch', this, this.buttonMusic, this.textMusic);
 	}
 	clickSettings() {
-		// do tweening
-		this.navbar.y = -this.navbar.height;
-		this.tweens.add({targets: this.navbar, y: 0, duration: 500, ease: 'Linear'});
-		this.buttonBack.y = -this.buttonBack.height-25;
-		this.tweens.add({targets: this.buttonBack, y: 25, duration: 500, ease: 'Linear'});
-		this.titleSettings.y = -this.titleSettings.height;
-		this.tweens.add({targets: this.titleSettings, y: 45, duration: 500, ease: 'Linear'});
-
 		this.buttonSound.setScale(0.5);
 		this.tweens.add({targets: this.buttonSound, scaleX: 1, scaleY: 1, duration: 500, delay: 0, ease: 'Cubic.easeOut' });
 		this.buttonMusic.setScale(0.5);
 		this.tweens.add({targets: this.buttonMusic, scaleX: 1, scaleY: 1, duration: 500, delay: 125, ease: 'Cubic.easeOut' });
 		this.buttonCredits.setScale(0.5);
 		this.tweens.add({targets: this.buttonCredits, scaleX: 1, scaleY: 1, duration: 500, delay: 250, ease: 'Cubic.easeOut' });
+		this.buttonCopy.setScale(0.5);
+		this.tweens.add({targets: this.buttonCopy, scaleX: 1, scaleY: 1, duration: 500, delay: 375, ease: 'Cubic.easeOut' });
 		this.buttonMore.setScale(0.5);
-		this.tweens.add({targets: this.buttonMore, scaleX: 1, scaleY: 1, duration: 500, delay: 375, ease: 'Cubic.easeOut' });
+		this.tweens.add({targets: this.buttonMore, scaleX: 1, scaleY: 1, duration: 500, delay: 500, ease: 'Cubic.easeOut' });
 	}
 	clickCredits() {
 		EPT.Sfx.play('click');
@@ -126,29 +131,34 @@ class Settings extends Phaser.Scene {
 		var that = this;
 		EPT.fadeOutIn(function(){
 			that.containerCredits.y = 0;
-			that.navbarCredits.y = -that.navbarCredits.height;
-			that.tweens.add({targets: that.navbarCredits, y: 0, duration: 500, ease: 'Linear'});
-			that.titleCredits.y = -that.titleCredits.height;
-			that.tweens.add({targets: that.titleCredits, y: 45, duration: 500, ease: 'Linear'});
-			that.creditsBack.y = -that.creditsBack.height-25;
-			that.tweens.add({targets: that.creditsBack, y: 25, duration: 500, ease: 'Linear'});
-
-			// that.titleCreditsLogo.setScale(0.5);
-			// that.tweens.add({targets: that.titleCreditsLogo, scaleX: 1, scaleY: 1, duration: 500, delay: 0, ease: 'Cubic.easeOut' });
 		}, this);
 
-		// this.buttonBack.alpha = 0;
-		this.buttonBack.input.enabled = false;
-		this.buttonSound.input.enabled = false;
-		this.buttonMusic.input.enabled = false;
-		this.buttonCredits.input.enabled = false;
-		if(this.bannerBeer && this.bannerBeer.input && this.bannerBeer.input.enabled) {
-			this.bannerBeer.input.enabled = false;
-		}
+		this.toggleInput('disable');
 		this.screenName = 'credits';
 	}
+	clickCopy() {
+		EPT.Sfx.play('click');
+		var that = this;
+		EPT.fadeOutIn(function(){
+			that.containerCopy.y = 0;
+
+			that.titleCopyText1.setScale(0.5, 0.5);
+			that.tweens.add({targets: that.titleCopyText1, scaleX: 1, scaleY: 1, duration: 500, delay: 0, ease: 'Cubic.easeOut' });
+			that.logoPortalGames.setScale(0.5, 0.5);
+			that.tweens.add({targets: that.logoPortalGames, scaleX: 1, scaleY: 1, duration: 500, delay: 125, ease: 'Cubic.easeOut' });
+			that.titleCopyText2.setScale(0.5, 0.5);
+			that.tweens.add({targets: that.titleCopyText2, scaleX: 1, scaleY: 1, duration: 500, delay: 250, ease: 'Cubic.easeOut' });
+			that.logoNeuroshimaHexpl.setScale(0.5, 0.5);
+			that.tweens.add({targets: that.logoNeuroshimaHexpl, scaleX: 1, scaleY: 1, duration: 500, delay: 375, ease: 'Cubic.easeOut' });
+			that.titleCopyText3.setScale(0.5, 0.5);
+			that.tweens.add({targets: that.titleCopyText3, scaleX: 1, scaleY: 1, duration: 500, delay: 500, ease: 'Cubic.easeOut' });
+			that.logoEnclaveGames.setScale(0.5, 0.5);
+			that.tweens.add({targets: that.logoEnclaveGames, scaleX: 1, scaleY: 1, duration: 500, delay: 625, ease: 'Cubic.easeOut' });
+		}, this);
+		this.toggleInput('disable');
+		this.screenName = 'copyright';
+	}
     clickBeer() {
-        // console.log('Beer clicked!');
         EPT.Sfx.play('click');
         window.top.location.href = 'https://www.paypal.me/end3r';
     }
@@ -156,17 +166,18 @@ class Settings extends Phaser.Scene {
 		EPT.Sfx.play('click');
 		if(name) {
 			this.buttonBack.alpha = 1;
-			this.buttonBack.input.enabled = true;
-			this.buttonSound.input.enabled = true;
-			this.buttonMusic.input.enabled = true;
-			this.buttonCredits.input.enabled = true;
-			if(this.bannerBeer && this.bannerBeer.input && this.bannerBeer.input.enabled) {
-				this.bannerBeer.input.enabled = true;
-			}
+			this.toggleInput('enable');
 			if(name == 'credits') {
 				var that = this;
 				EPT.fadeOutIn(function(){
 					that.containerCredits.y = EPT.world.height;
+					that.clickSettings();
+				}, this);
+			}
+			else if(name == 'copy') {
+				var that = this;
+				EPT.fadeOutIn(function(){
+					that.containerCopy.y = EPT.world.height;
 					that.clickSettings();
 				}, this);
 			}
@@ -176,6 +187,30 @@ class Settings extends Phaser.Scene {
 			EPT.fadeOutScene('MainMenu', this);
 		}
 	}
+	toggleInput(toggle) {
+		if(toggle == 'disable') {
+			this.buttonBack.input.enabled = false;
+			this.buttonSound.input.enabled = false;
+			this.buttonMusic.input.enabled = false;
+			this.buttonCredits.input.enabled = false;
+			this.buttonCopy.input.enabled = false;
+			this.buttonMore.input.enabled = false;
+			if(this.bannerBeer && this.bannerBeer.input && this.bannerBeer.input.enabled) {
+				this.bannerBeer.input.enabled = false;
+			}
+		}
+		else { // enable
+			this.buttonBack.input.enabled = true;
+			this.buttonSound.input.enabled = true;
+			this.buttonMusic.input.enabled = true;
+			this.buttonCredits.input.enabled = true;
+			this.buttonCopy.input.enabled = true;
+			this.buttonMore.input.enabled = true;
+			if(this.bannerBeer && this.bannerBeer.input && this.bannerBeer.input.enabled) {
+				this.bannerBeer.input.enabled = true;
+			}
+		}
+	}
 	clickEnclave() {
 		EPT.Sfx.play('click');
 		window.top.location.href = 'https://enclavegames.com/';
@@ -183,5 +218,13 @@ class Settings extends Phaser.Scene {
 	clickMore() {
 		EPT.Sfx.play('click');
 		window.top.location.href = 'https://enclavegames.com/games.html';
+	}
+	clickPortal() {
+		EPT.Sfx.play('click');
+		window.top.location.href = 'https://portalgames.pl/';
+	}
+	clickNeuroshimaHexpl() {
+		EPT.Sfx.play('click');
+		window.top.location.href = 'https://neuroshimahex.pl/';
 	}
 };
