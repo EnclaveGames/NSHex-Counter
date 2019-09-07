@@ -6,24 +6,14 @@ class Game extends Phaser.Scene {
         this.add.sprite(0, 0, 'background').setOrigin(0, 0);
         this.seethru = this.add.sprite(0, 190, 'img-seethru').setOrigin(0, 0);
 
-        // EPT._currentTileCounts = [];
-        // for(var i=0; i<EPT._tileCounts.length; i++) {
-        //     EPT._currentTileCounts[i] = [];
-        //     for(var j=0; j<EPT._tileCounts[i].length; j++) {
-        //         EPT._currentTileCounts[i][j] = EPT._tileCounts[i][j];
-        //     }
-        // }
         EPT._currentTileCounts = JSON.parse(JSON.stringify(EPT._tileCounts));
 
-        var fontTitle = { font: '46px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 7, align: 'center' };
-        this.fontSmall = { font: '28px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 4, align: 'center' };
-        this.fontMedium = { font: '36px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 5, align: 'center' };
-        var oneX = 200, oneY = 80;
-        var oneID = EPT._player[1];
-        this.oneName = EPT._armies[EPT._player[1]];
-        var twoX = 500, twoY = 80;
-        var twoID = EPT._player[2];
-        var twoName = EPT._armies[EPT._player[2]];
+        this.fontTitle = { font: EPT.text['STYLE']+'46px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 7, align: 'center' };
+        var fontTitle = { font: EPT.text['STYLE']+'46px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 7, align: 'center' };
+        this.fontSmall = { font: EPT.text['STYLE']+'28px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 4, align: 'center' };
+        this.fontMedium = { font: EPT.text['STYLE']+'36px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 5, align: 'center' };
+        this.fontPopup  = { font: EPT.text['STYLE']+'24px '+EPT.text['FONT'], fill: '#000', stroke: '#fff', strokeThickness: 3, align: 'center' };
+
         this.playerTileCount = [0, 34, 34];
         for(var c=1; c<=2; c++) {
             if(EPT._armies[EPT._player[c]] == 'dancer') {
@@ -38,62 +28,23 @@ class Game extends Phaser.Scene {
 
         this.tabbar = this.add.sprite(0, -90, 'img-tabbar').setOrigin(0, 0);
 
-		this.buttonBack = new Button(20, 20, 'button-home', this.clickBack, this, 'noframes');
+		this.buttonBack = new Button(0, 0, 'button-home', this.popupShow, this, 'noframes');
         this.buttonBack.setOrigin(0, 0);
 
         this.visibleScreen = 1; // or 2
         this.countNum = [];
 
-        this.itemOne = this.add.container().setScale(0.5);
-        var borderOne = this.add.sprite(oneX, oneY, 'hex-shadow').setOrigin(0.5);//.setScale(0.5);
-        var tileOne = new Button(oneX, oneY, 'army-'+this.oneName, function(){
-            this.tweens.add({targets: this.allTiles[1], x: 0, duration: 500, ease: 'Back'});
-            this.tweens.add({targets: this.allTiles[2], x: EPT.world.width, duration: 500, ease: 'Back'});
-            this.visibleScreen = 1;
-            // this.tweens.add({targets: this.itemOne, scaleX: 0.75, scaleY: 0.75, duration: 500, ease: 'Back'});
-            // this.tweens.add({targets: this.itemTwo, scaleX: 0.5, scaleY: 0.5, duration: 500, ease: 'Back'});
+        this.hq = [];
+        this.activeHQ = [0, 'active', ''];
+        this.add.text(EPT.world.centerX+50, 100, 'vs', this.fontMedium).setOrigin(0.5);
+        // this.renderHQ(1);
+        // this.renderHQ(2);
+        this.renderBothHQs();
 
-            this.tweens.add({targets: this.itemOne, scaleX: 1, scaleY: 1, duration: 500, ease: 'Back'});
-            this.tweens.add({targets: this.itemTwo, scaleX: 0.75, scaleY: 0.75, duration: 500, ease: 'Back'});
-
-        }, this, 'noframes').setOrigin(0.5);//.setScale(0.5);
-        var labelOne = this.add.sprite(oneX, oneY+75, 'hex-labels', oneID+1).setOrigin(0.5);//.setScale(0.5);
-        this.countNum[1] = this.add.text(oneX+65, oneY-45, this.playerTileCount[1], fontTitle).setOrigin(0.5);//.setScale(0.5);
-        this.itemOne.add([borderOne,tileOne,labelOne,this.countNum[1]]);
-
-        var versus = this.add.text(EPT.world.centerX+50, 100, 'vs', this.fontMedium).setOrigin(0.5);
-
-        this.itemTwo = this.add.container().setScale(0.5);
-        var borderTwo = this.add.sprite(twoX, twoY, 'hex-shadow').setOrigin(0.5);//.setScale(0.5);
-        var tileTwo = new Button(twoX, twoY, 'army-'+twoName, function(){
-            this.tweens.add({targets: this.allTiles[1], x: -EPT.world.width, duration: 500, ease: 'Back'});
-            this.tweens.add({targets: this.allTiles[2], x: 0, duration: 500, ease: 'Back'});
-            this.visibleScreen = 2;
-            // this.tweens.add({targets: this.itemOne, scaleX: 0.5, scaleY: 0.5, duration: 500, ease: 'Back'});
-            // this.tweens.add({targets: this.itemTwo, scaleX: 0.75, scaleY: 0.75, duration: 500, ease: 'Back'});
-
-            this.tweens.add({targets: this.itemOne, scaleX: 0.75, scaleY: 0.75, duration: 500, ease: 'Back'});
-            this.tweens.add({targets: this.itemTwo, scaleX: 1, scaleY: 1, duration: 500, ease: 'Back'});
-
-        }, this, 'noframes').setOrigin(0.5);//.setScale(0.5);
-        var labelTwo = this.add.sprite(twoX, twoY+75, 'hex-labels', twoID+1).setOrigin(0.5);
-        this.countNum[2] = this.add.text(twoX+65, twoY-45, this.playerTileCount[2], fontTitle).setOrigin(0.);
-        this.itemTwo.add([borderTwo,tileTwo,labelTwo,this.countNum[2]]);
-        // this.itemTwo.setScale(0.75, 0.75);
-
-        // this.itemOne.setOrigin(0.5).setScale(0.5);
-        // this.tweens.add({targets: borderOne, scaleX: 1, scaleY: 1, duration: 500, ease: 'Back'});
-        // this.tweens.add({targets: tileOne, scaleX: 1, scaleY: 1, duration: 500, ease: 'Back'});
-        // this.tweens.add({targets: labelOne, scaleX: 1, scaleY: 1, duration: 500, ease: 'Back'});
-        // this.tweens.add({targets: this.countNum[1], scaleX: 1, scaleY: 1, duration: 500, ease: 'Back'});
-        this.tweens.add({targets: this.itemOne, scaleX: 1, scaleY: 1, duration: 500, ease: 'Back'});
-        this.tweens.add({targets: this.itemTwo, scaleX: 0.75, scaleY: 0.75, duration: 500, ease: 'Back'});
-
-        // this.navbar = this.add.sprite(0, EPT.world.height, 'img-navbar').setOrigin(0, 1);
-        this.buttonUp = new Button(10, EPT.world.height-40, 'button-down', function(){
+        this.buttonUp = new Button(0, EPT.world.height, 'button-up', function(){
             this.tweens.add({targets: this.allTiles[this.visibleScreen], y: this.allTiles[this.visibleScreen].y-190, duration: 500, ease: 'Back'});
         }, this, 'noframes').setOrigin(0, 1);
-		this.buttonDown = new Button(EPT.world.width-10, EPT.world.height-40, 'button-up', function(){
+		this.buttonDown = new Button(EPT.world.width, EPT.world.height, 'button-down', function(){
             this.tweens.add({targets: this.allTiles[this.visibleScreen], y: this.allTiles[this.visibleScreen].y+190, duration: 500, ease: 'Back'});
         }, this, 'noframes').setOrigin(1, 1);
 
@@ -124,6 +75,103 @@ class Game extends Phaser.Scene {
                 // }
             // }
         });
+        this.popupInit();
+    }
+    renderHQ(n, activeDefault) {
+        var active = (activeDefault) ? activeDefault : this.activeHQ[n];
+        var x = (n == 1) ? 200 : 450;
+        var activeScaleX = 1, activeScaleY = 1;
+        var inactiveScaleX = 1, inactiveScaleY = 1; // .75
+
+        if(active) {
+            var name = EPT._armies[EPT._player[n]];
+            var borderStyle = 'pattern';
+            var currentScaleX = activeScaleX;
+            var currentScaleY = activeScaleY;
+            var offsetLeft = 0;
+            var offsetTop = 0;
+        }
+        else {
+            var name = EPT._armies[EPT._player[n]]+'-grey';
+            var borderStyle = 'color';
+            var currentScaleX = inactiveScaleX;
+            var currentScaleY = inactiveScaleY;
+            var offsetLeft = 35
+            var offsetTop = 30;
+        }
+
+        var tween = [];
+        tween[1] = [], tween[2] = [];
+        tween[1][1] = 0, tween[1][2] = EPT.world.width;
+        tween[2][1] = -EPT.world.width, tween[2][2] = 0;
+
+        var y = 80;
+        var id = EPT._player[n];
+
+        // x = x + offsetLeft*2*n + 20*(n-1);
+        // y += offsetTop;
+
+        this.hq[n] = this.add.container().setScale(currentScaleX, currentScaleY);
+        var shadow = this.add.sprite(x, y, 'hex-shadow').setOrigin(0.5);
+        var border = this.add.sprite(x, y, 'hex-border-'+borderStyle).setOrigin(0.5);
+        var tile = new Button(x, y, 'army-'+name, function(){
+            this.tweens.add({targets: this.allTiles[1], x: tween[n][1], duration: 500, ease: 'Back'});
+            this.tweens.add({targets: this.allTiles[2], x: tween[n][2], duration: 500, ease: 'Back'});
+            this.visibleScreen = n;
+            // this.tweens.add({targets: this.hq[1], x: x-offsetLeft, y: y-offsetTop, scaleX: scaleX[n][1], scaleY: scaleY[n][1], duration: 500, ease: 'Back'});
+            // this.tweens.add({targets: this.hq[2], x: x-offsetLeft, y: y-offsetTop, scaleX: scaleX[n][2], scaleY: scaleY[n][2], duration: 500, ease: 'Back', onComplete: function(){
+
+                if(this.activeHQ[n] != 'active') {
+                    this.hq[1].destroy();
+                    this.hq[2].destroy();
+                    if(this.activeHQ[1] == '') {
+                        this.activeHQ = [0, 'active', ''];
+                    }
+                    else {
+                        this.activeHQ = [0, '', 'active'];
+                    }
+                    this.renderHQ(1, this.activeHQ[1]);
+                    this.renderHQ(2, this.activeHQ[2]);
+                }
+
+            // }, onCompleteScope: this});
+        }, this, 'noframes').setOrigin(0.5);
+        var label = this.add.sprite(x, y+75, 'hex-labels-'+EPT.Lang.current, id+1).setOrigin(0.5);
+        this.countNum[n] = this.add.text(x+65, y-45, this.playerTileCount[n], this.fontTitle).setOrigin(0.5);
+        this.hq[n].add([shadow,border,tile,label,this.countNum[n]]);
+    }
+    renderBothHQs(n, change) {
+        // if(this.activeHQ[n] == 'active') {
+        //     console.log('nope');
+        // }
+        // else {
+        //     this.hq[1].destroy();
+        //     this.hq[2].destroy();
+        //     if(change){
+        //         if(this.activeHQ[1] == '') {
+        //             this.activeHQ = [0, 'active', ''];
+        //         }
+        //         else {
+        //             this.activeHQ = [0, '', 'active'];
+        //         }
+        //     }
+        //     this.renderHQ(1, this.activeHQ[1]);
+        //     this.renderHQ(2, this.activeHQ[2]);
+        // }
+
+        this.renderHQ(1, this.activeHQ[1]);
+        this.renderHQ(2, this.activeHQ[2]);
+
+        // if(change){
+        //     if(this.activeHQ[1] == '') {
+        //         this.activeHQ = [0, 'active', ''];
+        //     }
+        //     else {
+        //         this.activeHQ = [0, '', 'active'];
+        //     }
+        // }
+        // this.renderHQ(1, this.activeHQ[1]);
+        // this.renderHQ(2, this.activeHQ[2]);
     }
     showAllTiles(n) {
         this.allTiles[n] = this.add.container();
@@ -259,8 +307,36 @@ class Game extends Phaser.Scene {
 	}
 	clickBack() {
         EPT.Sfx.play('click');
-        if(confirm('Are you sure?')) {
-            EPT.fadeOutScene('MainMenu', this);
-        } 
-	}
+        EPT.fadeOutScene('MainMenu', this);
+    }
+    popupInit() {
+        this.popupOverlay = this.add.sprite(0, EPT.world.height, 'overlay').setOrigin(0, 0).setAlpha(0.75);
+        this.popupContainer = this.add.container(0, EPT.world.height);
+		var popupBg = this.add.sprite(EPT.world.centerX, 200, 'popup-bg').setOrigin(0.5);
+        var popupTitle = this.add.sprite(EPT.world.centerX, 130, 'text-areyousure-'+EPT.Lang.current).setOrigin(0.5);
+        var popupText = this.add.text(EPT.world.centerX, 235, EPT.text['popup-lostprogress'], this.fontPopup).setOrigin(0.5);
+		var popupYes = new Button(EPT.world.centerX-100, 340, 'button-yes-'+EPT.Lang.current, function(){ this.clickBack(); }, this).setOrigin(0.5);
+		var popupNo = new Button(EPT.world.centerX+100, 340, 'button-no-'+EPT.Lang.current, function(){ this.popupHide(); }, this).setOrigin(0.5);
+		this.popupContainer.add([popupBg,popupTitle,popupText,popupYes,popupNo]);
+    }
+    popupShow() {
+        // move to the right spot and animate in
+        this.popupOverlay.y = 0;
+        this.popupOverlay.setAlpha(0);
+        this.tweens.add({targets: this.popupOverlay, alpha: 0.75, duration: 150, ease: 'Linear'});
+        this.popupContainer.x = EPT.world.centerX;
+        this.popupContainer.y = 360;
+        this.popupContainer.setScale(0);
+        this.tweens.add({targets: this.popupContainer, x: 0, y: 140, scaleX: 1, scaleY: 1, duration: 350, ease: 'Back'});
+    }
+    popupHide() {
+        // animate out and move off the screen
+        this.tweens.add({targets: this.popupOverlay, alpha: 0, duration: 150, ease: 'Linear'});
+        this.tweens.add({targets: this.popupContainer, x: EPT.world.centerX, y: 360, scaleX: 0, scaleY: 0, duration: 150, ease: 'Linear', onComplete: function(){
+            this.popupOverlay.setAlpha(0.75);
+            this.popupOverlay.y = EPT.world.height;
+            this.popupContainer.y = EPT.world.height;
+            this.popupContainer.setScale(1);
+        }, onCompleteScope: this});
+    }
 };

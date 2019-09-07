@@ -205,28 +205,63 @@ EPT.Lang = {
     return query_string;
   },
   updateLanguage: function(lang) {
+    // the importance of language setting: parameter, url, cache, navigator
+    var savedLang = EPT.Storage.get('EPT-language');
     var query = window.location.search.substring(1);
     var qs = EPT.Lang.parseQueryString(query);
-    if(qs && qs['lang']) {
-      console.log('LANG: '+qs['lang']);
-      EPT.Lang.current = qs['lang'];
-    } else {
-      if(lang) {
-        EPT.Lang.current = lang;
-      }
-      else {
-        EPT.Lang.current = navigator.language;
-      }
+
+    if(lang) {
+      EPT.Lang.current = lang;
     }
+    else if(qs && qs['lang']) {
+      EPT.Lang.current = qs['lang'];
+    }
+    else if(savedLang) {
+      EPT.Lang.current = savedLang;
+    }
+    else {
+      EPT.Lang.current = navigator.language;
+    }
+
     if(EPT.Lang.options.indexOf(EPT.Lang.current) == -1) {
       EPT.Lang.current = 'en';
     }
   },
+  // setLanguage: function(lang) {
+	// 	EPT.Storage.set('EPT-language', lang);
+  // },
   text: {
     'en': {
       'FONT': 'montserratbold',
-      'menu-intro': 'Choose armies\nand start the game',
+      'STYLE': '',
+      'menu-intro': 'Choose both armies\nand start the game',
       'settings': 'Settings',
+      'language-title': 'Language',
+      'language-help': '\
+Would you like to help translate\n\
+this app to your language?\n\
+Let us know at\n\
+nshex@enclavegames.com!',
+      'monetization-title': 'Monetization',
+      'monetization-description1': '\
+The NSHex Counter app is free,\n\
+but you can appreciate that fact\n\
+either by becoming a Web Monetized\n\
+power user - a Coil subscriber:',
+      'monetization-description2': '\
+or sending us a few bucks for\n\
+a beer (or coffee!) directly:',
+      'monetization-description3': '\
+Coil subscribers will see here\n\
+statistics of their gameplays.',
+      'monetization-thanks1': '\
+Thank you for being Coil\'s\n\
+Web Monetized power user\n\
+and supporting Enclave Games!',
+      'monetization-thanks2': '\
+We\'re working on delivering\n\
+the ability to track statistics\n\
+of your gameplays - coming soon!',
       'copy-title': 'Copyright',
       'copy-description1': '\
 All rights to the images of the\n\
@@ -240,60 +275,52 @@ for the community.',
       'copy-description3': '\
 It was developed by the\n\
 Enclave Games team.',
-      'thanks': 'Thank you for being\nWeb Monetized power user\nand supporting EPT!',
       'credits': 'Credits',
-      'madeby': 'EPT made by',
-      'team': 'THE TEAM',
+      'appname': 'NSHex Counter',
+      'madeby': 'made by',
+      'team': 'The Team',
       'coding': 'coding',
       'design': 'design',
       'testing': 'testing',
       'musicby': 'Music by',
       'selection1': 'Choose 1st army',
-      'selection2': 'Choose 2nd army'
+      'selection2': 'Choose 2nd army',
+      'popup-lostprogress': 'All progress will be lost.'
     },
     'pl': {
       'FONT': 'Arial',
-      'menu-intro': 'Wybierz armie\ni zacznij grę',
-      'settings': 'USTAWIENIA',
-      'copyright-title': 'Prawa autorskie',
-      'copyright-description': '[]',
+      'STYLE': 'bold ',
+      'menu-intro': 'Wybierz obie armie\ni zacznij grę',
+      'settings': 'Ustawienia',
+      'language-title': 'Język',
+      'language-help': '',
+      'monetization-title': 'Monetyzacja',
+      'monetization-description': '[Monetyzacja]',
+      'copy-title': 'Prawa autorskie',
+      'copy-description1': '\
+Wszelkie prawa do grafik żetonów\n\
+armii gry Neuroshima Hex\n\
+należą do jej twórcy i wydawcy:\n\
+wydawnictwa Portal Games.',
+      'copy-description2': '\
+Ta aplikacja jest darmowa\n\
+i została zrobiona przez\n\
+społeczność, dla społeczności.',
+      'copy-description3': '\
+Stworzeniem aplikacji zajęło się\n\
+studio Enclave Games.',
       'thanks': 'Dzięki za bycie\npłacącym subskrybentem\ni wspieranie EPT!',
-      'sound-on': 'Dźwięk: WŁ.',
-      'sound-off': 'Dźwięk: WYŁ.',
-      'music-on': 'Muzyka: WŁ.',
-      'music-off': 'Muzyka: WYŁ.',
-      'keyboard-info': 'Wciśnij K by zobaczyć skróty klawiszowe',
-      'credits': 'AUTORZY',
-      'madeby': 'EPT stworzone przez',
-      'team': 'ZESPÓŁ',
-      'coding': 'kodowanie',
-      'design': 'grafika',
+      'credits': 'Autorzy',
+      'appname': 'NSHex Counter',
+      'madeby': 'stworzony przez',
+      'team': 'Zespół',
+      'coding': 'programowanie',
+      'design': 'projektowanie',
       'testing': 'testowanie',
       'musicby': 'Muzyka autorstwa',
-      'key-title': 'SKRÓTY KLAWISZOWE',
-      'key-settings-title': 'Ustawienia',
-      'key-settings-onoff': 'S - pokaż/ukryj ustawienia',
-      'key-audio': 'A - włącz/wyłącz dźwięk',
-      'key-music': 'M - włącz/wyłącz muzykę',
-      'key-credits': 'C - pokaż/ukryj autorów',
-      'key-shortcuts': 'K - pokaż/ukryj skróty klawiszowe',
-      'key-menu': 'Menu główne',
-      'key-start': 'Enter - zacznij grę',
-      'key-continue': 'Enter - kontynuuj',
-      'key-gameplay': 'Rozgrywka',
-      'key-button': 'Enter - aktywuj przycisk CLICK ME',
-      'key-pause': 'P - włącz/wyłącz pauzę',
-      'key-pause-title': 'Ekran pauzy',
-      'key-back': 'B - powrót do menu głównego',
-      'key-return': 'P - powrót do gry',
-      'key-gameover': 'Ekran końca gry',
-      'key-try': 'T - spróbuj ponownie',
-      'gameplay-score': 'Wynik: ',
-      'gameplay-timeleft': 'Pozostały czas: ',
-      'gameplay-paused': 'PAUZA',
-      'gameplay-gameover': 'KONIEC GRY',
-      'menu-highscore': 'Rekord: ',
-      'screen-story-howto': 'Ekran fabuły / jak grać'
+      'selection1': 'Wybierz 1szą armię',
+      'selection2': 'Wybierz 2gą armię',
+      'popup-lostprogress': 'Cały postęp zostanie utracony.'
     }
   }
 };
