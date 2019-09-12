@@ -26,7 +26,7 @@ class Settings extends Phaser.Scene {
 		this.buttonLanguage = new Button(EPT.world.centerX, 320, 'button-language-'+EPT.Lang.current, this.clickLanguage, this).setOrigin(0.5);
 		this.buttonCredits = new Button(EPT.world.centerX, 450, 'button-credits-'+EPT.Lang.current, this.clickCredits, this).setOrigin(0.5);
 		this.buttonCopy = new Button(EPT.world.centerX, 580, 'button-copyright-'+EPT.Lang.current, this.clickCopy, this).setOrigin(0.5);
-		this.buttonMonetization = new Button(EPT.world.centerX, 710, 'button-monetization-'+EPT.Lang.current, this.clickMonetization, this).setOrigin(0.5);
+		this.buttonMonetization = new Button(EPT.world.centerX, 710, 'button-support-'+EPT.Lang.current, this.clickMonetization, this).setOrigin(0.5);
 		this.buttonMore = new Button(EPT.world.centerX, 840, 'button-more-'+EPT.Lang.current, this.clickMore, this).setOrigin(0.5);
 
 		EPT.Sfx.update('sound', this.buttonSound, this.textSound);
@@ -76,11 +76,14 @@ class Settings extends Phaser.Scene {
 		this.navbarLanguage = this.add.sprite(0, 0, 'img-navbar').setOrigin(0);
 		this.languageBack = new Button(10, 10, 'button-back', function(){this.clickBack('language');}, this, 'noframes').setOrigin(0, 0);
 		this.titleLanguage = this.add.text(EPT.world.centerX, 45, EPT.text['language-title'], fontTitle).setOrigin(0.5);
-		this.languageEnglish = new Button(EPT.world.centerX, 270, 'button-language-english-on', function(){ this.clickLanguageChange('en'); }, this).setOrigin(0.5);
-		this.languagePolish = new Button(EPT.world.centerX, 420, 'button-language-polish-off', function(){ this.clickLanguageChange('pl'); }, this).setOrigin(0.5);
+		this.languageEnglish = new Button(EPT.world.centerX, 270, 'button-language-english-on', function(){ EPT.Sfx.play('click'); this.clickLanguageChange('en'); }, this).setOrigin(0.5);
+		this.languagePolish = new Button(EPT.world.centerX, 420, 'button-language-polish-off', function(){ EPT.Sfx.play('click'); this.clickLanguageChange('pl'); }, this).setOrigin(0.5);
 		this.languageHelp = this.add.text(EPT.world.centerX, 850, EPT.text['language-help'], fontSmall).setOrigin(0.5);
 		this.containerLanguage.add([languageBg,this.navbarLanguage,this.languageBack,this.titleLanguage,this.languageEnglish,this.languagePolish,this.languageHelp]);
 		this.clickLanguageChange(EPT.Lang.current);
+		if(!EPT.Lang.foreign) {
+			this.languageHelp.setText('');
+		}
 
 		this.containerMonet = this.add.container(0, EPT.world.height);
 		var monetBg = this.add.sprite(0, 0, 'background').setOrigin(0, 0);
@@ -201,8 +204,6 @@ class Settings extends Phaser.Scene {
 				that.monetText3.setScale(0.5, 0.5);
 				that.tweens.add({targets: that.monetText3, scaleX: 1, scaleY: 1, duration: 500, delay: 250, ease: 'Cubic.easeOut' });
 			}
-			// that.logoEnclaveGames.setScale(0.5, 0.5);
-			// that.tweens.add({targets: that.logoEnclaveGames, scaleX: 1, scaleY: 1, duration: 500, delay: 312, ease: 'Cubic.easeOut' });
 		}, this);
 		this.toggleInput('disable');
 		this.screenName = 'monetization';
@@ -287,9 +288,6 @@ class Settings extends Phaser.Scene {
 			this.buttonCopy.input.enabled = false;
 			this.buttonMonetization.input.enabled = false;
 			this.buttonMore.input.enabled = false;
-			// if(this.bannerBeer && this.bannerBeer.input && this.bannerBeer.input.enabled) {
-			// 	this.bannerBeer.input.enabled = false;
-			// }
 		}
 		else { // enable
 			this.buttonBack.input.enabled = true;
@@ -300,9 +298,6 @@ class Settings extends Phaser.Scene {
 			this.buttonCopy.input.enabled = true;
 			this.buttonMonetization.input.enabled = true;
 			this.buttonMore.input.enabled = true;
-			// if(this.bannerBeer && this.bannerBeer.input && this.bannerBeer.input.enabled) {
-			// 	this.bannerBeer.input.enabled = true;
-			// }
 		}
 	}
 	clickEnclave() {
@@ -311,7 +306,7 @@ class Settings extends Phaser.Scene {
 	}
 	clickMore() {
 		EPT.Sfx.play('click');
-		window.top.location.href = 'https://enclavegames.com/games.html';
+		window.top.location.href = 'https://nshex.enclavegames.com/';
 	}
 	clickPortal() {
 		EPT.Sfx.play('click');

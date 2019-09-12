@@ -10,6 +10,9 @@ EPT.Sfx = {
         if(type == 'sound') {
           EPT.Sfx.sounds = [];
           EPT.Sfx.sounds['click'] = game.sound.add('sound-click');
+          EPT.Sfx.sounds['kill'] = game.sound.add('sound-kill');
+          EPT.Sfx.sounds['heal'] = game.sound.add('sound-heal');
+          EPT.Sfx.sounds['change'] = game.sound.add('sound-change');
         }
         else { // music
           if(!EPT.Sfx.music || !EPT.Sfx.music.isPlaying) {
@@ -209,6 +212,7 @@ EPT.Lang = {
     var savedLang = EPT.Storage.get('EPT-language');
     var query = window.location.search.substring(1);
     var qs = EPT.Lang.parseQueryString(query);
+    EPT.Lang.foreign = false;
 
     if(lang) {
       EPT.Lang.current = lang;
@@ -226,10 +230,11 @@ EPT.Lang = {
     if(EPT.Lang.options.indexOf(EPT.Lang.current) == -1) {
       EPT.Lang.current = 'en';
     }
+
+    if(navigator.language != 'en' && navigator.language != 'pl') {
+      EPT.Lang.foreign = true;
+    }
   },
-  // setLanguage: function(lang) {
-	// 	EPT.Storage.set('EPT-language', lang);
-  // },
   text: {
     'en': {
       'FONT': 'montserratbold',
@@ -242,7 +247,7 @@ Would you like to help translate\n\
 this app to your language?\n\
 Let us know at\n\
 nshex@enclavegames.com!',
-      'monetization-title': 'Monetization',
+      'monetization-title': 'Support us',
       'monetization-description1': '\
 The NSHex Counter app is free,\n\
 but you can appreciate that fact\n\
@@ -294,8 +299,26 @@ Enclave Games team.',
       'settings': 'Ustawienia',
       'language-title': 'Język',
       'language-help': '',
-      'monetization-title': 'Monetyzacja',
-      'monetization-description': '[Monetyzacja]',
+      'monetization-title': 'Wesprzyj nas',
+      'monetization-description1': '\
+Aplikacja NSHex Counter jest\n\
+darmowa, ale mimo wszystko nadal\n\
+możesz nas wesprzeć  - albo\n\
+zakładając konto w serwisie Coil:',
+      'monetization-description2': '\
+albo wysyłając kilka złotych\n\
+na piwo (lub kawę!) bezpośrednio:',
+      'monetization-description3': '\
+Subskrybenci Coil będą mogli\n\
+zobaczyć tu statystyki swoich gier.',
+      'monetization-thanks1': '\
+Dzięki za bycie aktywnym\n\
+subskrybentem serwisu Coil\n\
+i wspieranie Enclave Games!',
+      'monetization-thanks2': '\
+Pracujemy nad możliwością\n\
+zapisu statystyk Twoich gier - \n\
+taka opcja pojawi się wkrótce!',
       'copy-title': 'Prawa autorskie',
       'copy-description1': '\
 Wszelkie prawa do grafik żetonów\n\
@@ -324,16 +347,3 @@ studio Enclave Games.',
     }
   }
 };
-
-// Usage tracking - remember to replace with your own!
-// var head = document.getElementsByTagName('head')[0];
-// var script = document.createElement('script');
-// script.type = 'text/javascript';
-// script.onload = function() {
-//   window.dataLayer = window.dataLayer || [];
-//   function gtag(){dataLayer.push(arguments);}
-//   gtag('js', new Date());
-//   gtag('config', 'UA-30485283-26');
-// }
-// script.src = 'https://www.googletagmanager.com/gtag/js?id=UA-30485283-26';
-// head.appendChild(script);

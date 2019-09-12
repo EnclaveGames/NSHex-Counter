@@ -14,9 +14,6 @@ class MainMenu extends Phaser.Scene {
         this.logoCounter = this.add.sprite(EPT.world.centerX, 150, 'logo-counter', 1);
         this.logoCounter.setOrigin(0.5, 0.5);
 
-		// EPT.Storage.initUnset('EPT-highscore', 0);
-        // var highscore = EPT.Storage.get('EPT-highscore');
-
 		var fontMenuIntro = { font: EPT.text['STYLE']+'30px '+EPT.text['FONT'], fill: '#000', align: 'center' };
 		this.add.text(EPT.world.centerX, 250, EPT.text['menu-intro'], fontMenuIntro).setOrigin(0.5, 0);
 
@@ -86,17 +83,11 @@ class MainMenu extends Phaser.Scene {
         this.buttonPlayer1.input.enabled = false;
         this.buttonPlayer2.input.enabled = false;
         this.selectionBackground = this.add.sprite(0, 0, 'background').setOrigin(0, 0);
-
         this.selectionNavbar = this.add.sprite(0, 0, 'img-navbar').setOrigin(0, 0);
-
         var fontTitle = { font: EPT.text['STYLE']+'40px '+EPT.text['FONT'], fill: '#fff', align: 'center' };
-		// var fontSubtitle = { font: '38px '+EPT.text['FONT'], fill: '#000', align: 'center' };
-		// var fontSmall = { font: '28px '+EPT.text['FONT'], fill: '#000', align: 'center' };
 		this.selectionTitle = this.add.text(EPT.world.centerX, 45, EPT.text['selection'+number], fontTitle).setOrigin(0.5, 0.5);
-
         this.selection.add([this.selectionBackground,this.selectionNavbar,this.selectionTitle]);
         this.showTiles(number);
-
         if(this.bgFilesLoaded) {
             this.tweens.add({targets: this.selection, x: 0, y: 0, scaleX: 1, scaleY: 1, duration: 350, ease: 'Back' }); // Cubic.easeOut
         }
@@ -105,7 +96,6 @@ class MainMenu extends Phaser.Scene {
             this.selection.y = 0;
             this.selection.setScale(1, 1);
         }
-        
     }
     showTiles(number) {
         this.tiles = this.add.container();
@@ -134,6 +124,9 @@ class MainMenu extends Phaser.Scene {
         }
     }
     clickReturn(number) {
+        if(this.bgFilesLoaded) {
+            EPT.Sfx.play('heal');
+        }
         this.clickBack(number);
         if(number == 1) {
             this.buttonPlayer1.setTexture('button-change-'+EPT.Lang.current);
@@ -173,9 +166,15 @@ class MainMenu extends Phaser.Scene {
         }
     }
     clickPlayer1() {
+        if(this.bgFilesLoaded) {
+            EPT.Sfx.play('click');
+        }
         this.initArmySelection(1);
     }
     clickPlayer2() {
+        if(this.bgFilesLoaded) {
+            EPT.Sfx.play('click');
+        }
         this.initArmySelection(2);
     }
     bothPlayersSelected() {
@@ -207,11 +206,6 @@ class MainMenu extends Phaser.Scene {
             }, this);
         }
     }
-    clickEnclave() {
-        console.log('Enclave clicked!');
-        EPT.Sfx.play('click');
-        window.top.location.href = 'https://enclavegames.com/';
-    }
     clickSettings() {
         if(this.bgFilesLoaded) {
             EPT.Sfx.play('click');
@@ -236,7 +230,9 @@ class MainMenu extends Phaser.Scene {
         }
     }
     clickStart() {
-        EPT.Sfx.play('click');
+        if(this.bgFilesLoaded) {
+            EPT.Sfx.play('click');
+        }
         EPT.fadeOutScene('Game', this);
     }
     clickBack(number) {
@@ -316,7 +312,7 @@ class MainMenu extends Phaser.Scene {
 				['army-irongang', 'img/army-irongang.png', {frameWidth:150,frameHeight:130}],
                 ['army-sandrunners', 'img/army-sandrunners.png', {frameWidth:150,frameHeight:130}],
                 
-				['button-monetization-en', 'img/lang/en/button-monetization.png', {frameWidth:300,frameHeight:85}],
+				['button-support-en', 'img/lang/en/button-support.png', {frameWidth:300,frameHeight:85}],
 				['button-more-en', 'img/lang/en/button-more.png', {frameWidth:300,frameHeight:85}],
 				['button-language-en', 'img/lang/en/button-language.png', {frameWidth:300,frameHeight:85}],
 				['button-credits-en', 'img/lang/en/button-credits.png', {frameWidth:300,frameHeight:85}],
@@ -324,7 +320,7 @@ class MainMenu extends Phaser.Scene {
                 ['button-yes-en', 'img/lang/en/button-yes.png', {frameWidth:160,frameHeight:85}],
                 ['button-no-en', 'img/lang/en/button-no.png', {frameWidth:160,frameHeight:85}],
 
-                ['button-monetization-pl', 'img/lang/pl/button-monetization.png', {frameWidth:300,frameHeight:85}],
+                ['button-support-pl', 'img/lang/pl/button-support.png', {frameWidth:300,frameHeight:85}],
 				['button-more-pl', 'img/lang/pl/button-more.png', {frameWidth:300,frameHeight:85}],
 				['button-language-pl', 'img/lang/pl/button-language.png', {frameWidth:300,frameHeight:85}],
 				['button-credits-pl', 'img/lang/pl/button-credits.png', {frameWidth:300,frameHeight:85}],
@@ -346,8 +342,11 @@ class MainMenu extends Phaser.Scene {
 				['tiles-hqs-grey', 'img/tiles-hqs-grey.png', {frameWidth:150,frameHeight:130}]                
             ],
 			'audio': [
-				['sound-click', ['sfx/audio-button.m4a','sfx/audio-button.mp3','sfx/audio-button.ogg']],
-				['music-theme', ['sfx/music-bitsnbites-liver.m4a','sfx/music-bitsnbites-liver.mp3','sfx/music-bitsnbites-liver.ogg']]
+				['sound-click', ['sfx/audio-click.m4a','sfx/audio-click.mp3','sfx/audio-click.ogg']],
+				['sound-heal', ['sfx/audio-heal.m4a','sfx/audio-heal.mp3','sfx/audio-heal.ogg']],
+				['sound-kill', ['sfx/audio-kill.m4a','sfx/audio-kill.mp3','sfx/audio-kill.ogg']],
+				['sound-change', ['sfx/audio-change.m4a','sfx/audio-change.mp3','sfx/audio-change.ogg']],
+				['music-theme', ['sfx/music-battle.m4a','sfx/music-battle.mp3','sfx/music-battle.ogg']]
 			]
 		};
 		for(var method in resources) {
@@ -357,7 +356,7 @@ class MainMenu extends Phaser.Scene {
 			}, this);
         };
         this.load.on('complete', function(){
-            console.log('All files loaded in the background!');
+            console.log('[NSHex Counter] All files loaded in the background.');
             this.bgFilesLoaded = true;
             EPT.Sfx.manage('music', 'init', this);
             EPT.Sfx.manage('sound', 'init', this);
