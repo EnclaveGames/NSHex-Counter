@@ -4,7 +4,9 @@ EPT.Sfx = {
 	manage: function(type, mode, game, button, label) {
 		switch(mode) {
 			case 'init': {
-        EPT.Storage.initUnset('EPT-'+type, true);
+        // EPT.Storage.initUnset('EPT-'+type, true);
+        EPT.Storage.initUnset('EPT-sound', true);
+        EPT.Storage.initUnset('EPT-music', false);
         EPT.Sfx.status = EPT.Sfx.status || [];
         EPT.Sfx.status[type] = EPT.Storage.get('EPT-'+type);
         if(type == 'sound') {
