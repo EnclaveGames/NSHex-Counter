@@ -105,9 +105,9 @@ class MainMenu extends Phaser.Scene {
         var i=0;
         for(var w=0; w<5; w++) {
             for(var h=0; h<4; h++) {
-                if(i<18) {
+                if(i<19) {
                     if(i > 15) {
-                        offsetLastLine = 140;
+                        offsetLastLine = 70; // 140
                     }
                     var newButton = new Button(offsetLastLine+offsetLeft+h*140, offsetTop+w*160, 'tiles-hqs', function(i){
                         return function(){
@@ -291,7 +291,8 @@ class MainMenu extends Phaser.Scene {
 				['army-uranopolis-grey', 'img/army-uranopolis-grey.png', {frameWidth:150,frameHeight:130}],
 				['army-deathbreath-grey', 'img/army-deathbreath-grey.png', {frameWidth:150,frameHeight:130}],
 				['army-irongang-grey', 'img/army-irongang-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-sandrunners-grey', 'img/army-sandrunners-grey.png', {frameWidth:150,frameHeight:130}],
+                ['army-sandrunners-grey', 'img/army-sandrunners-grey.png', {frameWidth:150,frameHeight:130}],
+                ['army-troglodytes-grey', 'img/army-troglodytes-grey.png', {frameWidth:150,frameHeight:130}],
 
 				['army-moloch', 'img/army-moloch.png', {frameWidth:150,frameHeight:130}],
 				['army-hegemony', 'img/army-hegemony.png', {frameWidth:150,frameHeight:130}],
@@ -311,6 +312,7 @@ class MainMenu extends Phaser.Scene {
 				['army-deathbreath', 'img/army-deathbreath.png', {frameWidth:150,frameHeight:130}],
 				['army-irongang', 'img/army-irongang.png', {frameWidth:150,frameHeight:130}],
                 ['army-sandrunners', 'img/army-sandrunners.png', {frameWidth:150,frameHeight:130}],
+                ['army-troglodytes', 'img/army-troglodytes.png', {frameWidth:150,frameHeight:130}],
                 
 				['button-support-en', 'img/lang/en/button-support.png', {frameWidth:300,frameHeight:85}],
 				['button-more-en', 'img/lang/en/button-more.png', {frameWidth:300,frameHeight:85}],

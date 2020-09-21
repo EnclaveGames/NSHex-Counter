@@ -23,9 +23,10 @@ class Boot extends Phaser.Scene {
         EPT._armies = [
             'moloch','borgo','outpost','hegemony','newyork','neojungle',
             'smart','vegas','steelpolice','dancer','sharrash','mephisto',
-            'doomsday','mississippi','uranopolis','deathbreath','irongang','sandrunners'
+            'doomsday','mississippi','uranopolis','deathbreath','irongang','sandrunners',
+            'troglodytes'
         ];
-        EPT._armyCounts = [22, 13, 15, 18, 20, 17, 16, 15, 18, 4, 17, 17, 16, 17, 20, 15, 9, 16];
+        EPT._armyCounts = [22, 13, 15, 18, 20, 17, 16, 15, 18, 4, 17, 17, 16, 17, 20, 15, 9, 16, 12];
         EPT._tileCounts = [
             [4, 1, 5, 1, 2, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1], // moloch
             [6, 4, 1, 6, 4, 2, 1, 2, 2, 1, 2, 1, 2], // borgo
@@ -44,7 +45,8 @@ class Boot extends Phaser.Scene {
             [1, 4, 3, 1, 2, 3, 4, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1], // uranopolis
             [1, 2, 3, 8, 3, 3, 1, 2, 1, 1, 1, 1, 2, 2, 3], // deathbreath
             [2, 9, 3, 3, 5, 3, 4, 4, 1], // irongang
-            [3, 5, 2, 1, 3, 2, 3, 1, 1, 2, 2, 2, 2, 1, 2, 2] // sandrunners
+            [3, 5, 2, 1, 3, 2, 3, 1, 1, 2, 2, 2, 2, 1, 2, 2], // sandrunners
+            [7, 3, 1, 1, 2, 2, 4, 5, 3, 2, 2, 2] // troglodytes
         ];
         this.scene.start('Preloader');
     }
