@@ -100,23 +100,23 @@ class MainMenu extends Phaser.Scene {
     showTiles(number) {
         this.tiles = this.add.container();
         var offsetLeft = 110;
-        var offsetTop = 200;
+        var offsetTop = 180;
         var offsetLastLine = 0;
         var i=0;
-        for(var w=0; w<5; w++) {
+        for(var w=0; w<6; w++) {
             for(var h=0; h<4; h++) {
-                if(i<20) {
+                if(i<21) {
                     // if(i > 15) {
                     //     offsetLastLine = 70; // 140
                     // }
-                    var newButton = new Button(offsetLastLine+offsetLeft+h*140, offsetTop+w*160, 'tiles-hqs', function(i){
+                    var newButton = new Button(offsetLastLine+offsetLeft+h*140, offsetTop+w*135, 'tiles-hqs', function(i){
                         return function(){
                             EPT._player[number] = i;
                             this.clickReturn(number);
                         }
-                    }(i), this, 'noframes').setFrame(i).setScale(0.85);
-                    var newBorder = this.add.sprite(offsetLastLine+offsetLeft+h*140, offsetTop+w*160, 'hex-border-pattern').setScale(0.85);
-                    var newLabel = this.add.sprite(offsetLastLine+offsetLeft+h*140, offsetTop+w*160+65, 'hex-labels-'+EPT.Lang.current, i+1).setScale(0.75);
+                    }(i), this, 'noframes').setFrame(i).setScale(0.75);
+                    var newBorder = this.add.sprite(offsetLastLine+offsetLeft+h*140, offsetTop+w*135, 'hex-border-pattern').setScale(0.75);
+                    var newLabel = this.add.sprite(offsetLastLine+offsetLeft+h*140, offsetTop+w*135+60, 'hex-labels-'+EPT.Lang.current, i+1).setScale(0.75);
                     this.selection.add([newButton,newBorder,newLabel]);
                     i++;
                 }
@@ -294,6 +294,7 @@ class MainMenu extends Phaser.Scene {
                 ['army-sandrunners-grey', 'img/army-sandrunners-grey.png', {frameWidth:150,frameHeight:130}],
                 ['army-troglodytes-grey', 'img/army-troglodytes-grey.png', {frameWidth:150,frameHeight:130}],
                 ['army-beasts-grey', 'img/army-beasts-grey.png', {frameWidth:150,frameHeight:130}],
+                ['army-pirates-grey', 'img/army-pirates-grey.png', {frameWidth:150,frameHeight:130}],
 
 				['army-moloch', 'img/army-moloch.png', {frameWidth:150,frameHeight:130}],
 				['army-hegemony', 'img/army-hegemony.png', {frameWidth:150,frameHeight:130}],
@@ -315,6 +316,7 @@ class MainMenu extends Phaser.Scene {
                 ['army-sandrunners', 'img/army-sandrunners.png', {frameWidth:150,frameHeight:130}],
                 ['army-troglodytes', 'img/army-troglodytes.png', {frameWidth:150,frameHeight:130}],
                 ['army-beasts', 'img/army-beasts.png', {frameWidth:150,frameHeight:130}],
+                ['army-pirates', 'img/army-pirates.png', {frameWidth:150,frameHeight:130}],
                 
 				['button-support-en', 'img/lang/en/button-support.png', {frameWidth:300,frameHeight:85}],
 				['button-more-en', 'img/lang/en/button-more.png', {frameWidth:300,frameHeight:85}],

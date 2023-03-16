@@ -375,9 +375,9 @@ class Boot extends Phaser.Scene {
             'moloch','borgo','outpost','hegemony','newyork','neojungle',
             'smart','vegas','steelpolice','dancer','sharrash','mephisto',
             'doomsday','mississippi','uranopolis','deathbreath','irongang','sandrunners',
-            'troglodytes', 'beasts'
+            'troglodytes', 'beasts', 'pirates'
         ];
-        EPT._armyCounts = [22, 13, 15, 18, 20, 17, 16, 15, 18, 4, 17, 17, 16, 17, 20, 15, 9, 16, 12, 15];
+        EPT._armyCounts = [22, 13, 15, 18, 20, 17, 16, 15, 18, 4, 17, 17, 16, 17, 20, 15, 9, 16, 12, 15, 16];
         EPT._tileCounts = [
             [4, 1, 5, 1, 2, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1], // moloch
             [6, 4, 1, 6, 4, 2, 1, 2, 2, 1, 2, 1, 2], // borgo
@@ -398,7 +398,8 @@ class Boot extends Phaser.Scene {
             [2, 9, 3, 3, 5, 3, 4, 4, 1], // irongang
             [3, 5, 2, 1, 3, 2, 3, 1, 1, 2, 2, 2, 2, 1, 2, 2], // sandrunners
             [7, 3, 1, 1, 2, 2, 4, 5, 3, 2, 2, 2], // troglodytes
-            [2, 6, 1, 3, 1, 2, 4, 2, 2, 2, 2, 1, 3, 2, 1] // beasts
+            [2, 6, 1, 3, 1, 2, 4, 2, 2, 2, 2, 1, 3, 2, 1], // beasts
+            [5, 3, 1, 2, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 2, 1] // pirates
         ];
         this.scene.start('Preloader');
     }
@@ -568,23 +569,23 @@ class MainMenu extends Phaser.Scene {
     showTiles(number) {
         this.tiles = this.add.container();
         var offsetLeft = 110;
-        var offsetTop = 200;
+        var offsetTop = 180;
         var offsetLastLine = 0;
         var i=0;
-        for(var w=0; w<5; w++) {
+        for(var w=0; w<6; w++) {
             for(var h=0; h<4; h++) {
-                if(i<20) {
+                if(i<21) {
                     // if(i > 15) {
                     //     offsetLastLine = 70; // 140
                     // }
-                    var newButton = new Button(offsetLastLine+offsetLeft+h*140, offsetTop+w*160, 'tiles-hqs', function(i){
+                    var newButton = new Button(offsetLastLine+offsetLeft+h*140, offsetTop+w*135, 'tiles-hqs', function(i){
                         return function(){
                             EPT._player[number] = i;
                             this.clickReturn(number);
                         }
-                    }(i), this, 'noframes').setFrame(i).setScale(0.85);
-                    var newBorder = this.add.sprite(offsetLastLine+offsetLeft+h*140, offsetTop+w*160, 'hex-border-pattern').setScale(0.85);
-                    var newLabel = this.add.sprite(offsetLastLine+offsetLeft+h*140, offsetTop+w*160+65, 'hex-labels-'+EPT.Lang.current, i+1).setScale(0.75);
+                    }(i), this, 'noframes').setFrame(i).setScale(0.75);
+                    var newBorder = this.add.sprite(offsetLastLine+offsetLeft+h*140, offsetTop+w*135, 'hex-border-pattern').setScale(0.75);
+                    var newLabel = this.add.sprite(offsetLastLine+offsetLeft+h*140, offsetTop+w*135+60, 'hex-labels-'+EPT.Lang.current, i+1).setScale(0.75);
                     this.selection.add([newButton,newBorder,newLabel]);
                     i++;
                 }
@@ -759,9 +760,10 @@ class MainMenu extends Phaser.Scene {
         ['army-uranopolis-grey', 'img/army-uranopolis-grey.png', {frameWidth:150,frameHeight:130}],
         ['army-deathbreath-grey', 'img/army-deathbreath-grey.png', {frameWidth:150,frameHeight:130}],
         ['army-irongang-grey', 'img/army-irongang-grey.png', {frameWidth:150,frameHeight:130}],
-        ['army-sandrunners-grey', 'img/army-sandrunners-grey.png', {frameWidth:150,frameHeight:130}],
-        ['army-troglodytes-grey', 'img/army-troglodytes-grey.png', {frameWidth:150,frameHeight:130}],
-        ['army-beasts-grey', 'img/army-beasts-grey.png', {frameWidth:150,frameHeight:130}],        
+                ['army-sandrunners-grey', 'img/army-sandrunners-grey.png', {frameWidth:150,frameHeight:130}],
+                ['army-troglodytes-grey', 'img/army-troglodytes-grey.png', {frameWidth:150,frameHeight:130}],
+                ['army-beasts-grey', 'img/army-beasts-grey.png', {frameWidth:150,frameHeight:130}],
+                ['army-pirates-grey', 'img/army-pirates-grey.png', {frameWidth:150,frameHeight:130}],
 
         ['army-moloch', 'img/army-moloch.png', {frameWidth:150,frameHeight:130}],
         ['army-hegemony', 'img/army-hegemony.png', {frameWidth:150,frameHeight:130}],
@@ -780,25 +782,26 @@ class MainMenu extends Phaser.Scene {
         ['army-uranopolis', 'img/army-uranopolis.png', {frameWidth:150,frameHeight:130}],
         ['army-deathbreath', 'img/army-deathbreath.png', {frameWidth:150,frameHeight:130}],
         ['army-irongang', 'img/army-irongang.png', {frameWidth:150,frameHeight:130}],
-        ['army-sandrunners', 'img/army-sandrunners.png', {frameWidth:150,frameHeight:130}],
-        ['army-troglodytes', 'img/army-troglodytes.png', {frameWidth:150,frameHeight:130}],
-        ['army-beasts', 'img/army-beasts.png', {frameWidth:150,frameHeight:130}],
+                ['army-sandrunners', 'img/army-sandrunners.png', {frameWidth:150,frameHeight:130}],
+                ['army-troglodytes', 'img/army-troglodytes.png', {frameWidth:150,frameHeight:130}],
+                ['army-beasts', 'img/army-beasts.png', {frameWidth:150,frameHeight:130}],
+                ['army-pirates', 'img/army-pirates.png', {frameWidth:150,frameHeight:130}],
                 
         ['button-support-en', 'img/lang/en/button-support.png', {frameWidth:300,frameHeight:85}],
         ['button-more-en', 'img/lang/en/button-more.png', {frameWidth:300,frameHeight:85}],
         ['button-language-en', 'img/lang/en/button-language.png', {frameWidth:300,frameHeight:85}],
         ['button-credits-en', 'img/lang/en/button-credits.png', {frameWidth:300,frameHeight:85}],
         ['button-copyright-en', 'img/lang/en/button-copyright.png', {frameWidth:300,frameHeight:85}],
-        ['button-yes-en', 'img/lang/en/button-yes.png', {frameWidth:160,frameHeight:85}],
-        ['button-no-en', 'img/lang/en/button-no.png', {frameWidth:160,frameHeight:85}],
+                ['button-yes-en', 'img/lang/en/button-yes.png', {frameWidth:160,frameHeight:85}],
+                ['button-no-en', 'img/lang/en/button-no.png', {frameWidth:160,frameHeight:85}],
 
-        ['button-support-pl', 'img/lang/pl/button-support.png', {frameWidth:300,frameHeight:85}],
+                ['button-support-pl', 'img/lang/pl/button-support.png', {frameWidth:300,frameHeight:85}],
         ['button-more-pl', 'img/lang/pl/button-more.png', {frameWidth:300,frameHeight:85}],
         ['button-language-pl', 'img/lang/pl/button-language.png', {frameWidth:300,frameHeight:85}],
         ['button-credits-pl', 'img/lang/pl/button-credits.png', {frameWidth:300,frameHeight:85}],
         ['button-copyright-pl', 'img/lang/pl/button-copyright.png', {frameWidth:300,frameHeight:85}],
-        ['button-yes-pl', 'img/lang/pl/button-yes.png', {frameWidth:160,frameHeight:85}],
-        ['button-no-pl', 'img/lang/pl/button-no.png', {frameWidth:160,frameHeight:85}],
+                ['button-yes-pl', 'img/lang/pl/button-yes.png', {frameWidth:160,frameHeight:85}],
+                ['button-no-pl', 'img/lang/pl/button-no.png', {frameWidth:160,frameHeight:85}],
 
         ['button-sound-on', 'img/button-sound-on.png', {frameWidth:160,frameHeight:85}],
         ['button-sound-off', 'img/button-sound-off.png', {frameWidth:160,frameHeight:85}],
@@ -812,7 +815,7 @@ class MainMenu extends Phaser.Scene {
         ['button-undo', 'img/button-undo.png', {frameWidth:45,frameHeight:49}],
 
         ['tiles-hqs-grey', 'img/tiles-hqs-grey.png', {frameWidth:150,frameHeight:130}]                
-      ],
+            ],
       'audio': [
         ['sound-click', ['sfx/audio-click.m4a','sfx/audio-click.mp3','sfx/audio-click.ogg']],
         ['sound-heal', ['sfx/audio-heal.m4a','sfx/audio-heal.mp3','sfx/audio-heal.ogg']],
