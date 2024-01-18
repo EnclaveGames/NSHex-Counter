@@ -375,9 +375,9 @@ class Boot extends Phaser.Scene {
             'moloch','borgo','outpost','hegemony','newyork','neojungle',
             'smart','vegas','steelpolice','dancer','sharrash','mephisto',
             'doomsday','mississippi','uranopolis','deathbreath','irongang','sandrunners',
-            'troglodytes', 'beasts', 'pirates'
+            'troglodytes', 'beasts', 'pirates', 'merchantsguild'
         ];
-        EPT._armyCounts = [22, 13, 15, 18, 20, 17, 16, 15, 18, 4, 17, 17, 16, 17, 20, 15, 9, 16, 12, 15, 16];
+        EPT._armyCounts = [22, 13, 15, 18, 20, 17, 16, 15, 18, 4, 17, 17, 16, 17, 20, 15, 9, 16, 12, 15, 16, 19];
         EPT._tileCounts = [
             [4, 1, 5, 1, 2, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1], // moloch
             [6, 4, 1, 6, 4, 2, 1, 2, 2, 1, 2, 1, 2], // borgo
@@ -399,7 +399,8 @@ class Boot extends Phaser.Scene {
             [3, 5, 2, 1, 3, 2, 3, 1, 1, 2, 2, 2, 2, 1, 2, 2], // sandrunners
             [7, 3, 1, 1, 2, 2, 4, 5, 3, 2, 2, 2], // troglodytes
             [2, 6, 1, 3, 1, 2, 4, 2, 2, 2, 2, 1, 3, 2, 1], // beasts
-            [5, 3, 1, 2, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 2, 1] // pirates
+            [5, 3, 1, 2, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 2, 1], // pirates
+            [1, 1, 5, 2, 1, 1, 3, 2, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 4] // merchants guild
         ];
         this.scene.start('Preloader');
     }
@@ -574,7 +575,7 @@ class MainMenu extends Phaser.Scene {
         var i=0;
         for(var w=0; w<6; w++) {
             for(var h=0; h<4; h++) {
-                if(i<21) {
+                if(i<22) {
                     // if(i > 15) {
                     //     offsetLastLine = 70; // 140
                     // }
@@ -764,6 +765,7 @@ class MainMenu extends Phaser.Scene {
                 ['army-troglodytes-grey', 'img/army-troglodytes-grey.png', {frameWidth:150,frameHeight:130}],
                 ['army-beasts-grey', 'img/army-beasts-grey.png', {frameWidth:150,frameHeight:130}],
                 ['army-pirates-grey', 'img/army-pirates-grey.png', {frameWidth:150,frameHeight:130}],
+                ['army-merchantsguild-grey', 'img/army-merchantsguild-grey.png', {frameWidth:150,frameHeight:130}],
 
         ['army-moloch', 'img/army-moloch.png', {frameWidth:150,frameHeight:130}],
         ['army-hegemony', 'img/army-hegemony.png', {frameWidth:150,frameHeight:130}],
@@ -786,6 +788,7 @@ class MainMenu extends Phaser.Scene {
                 ['army-troglodytes', 'img/army-troglodytes.png', {frameWidth:150,frameHeight:130}],
                 ['army-beasts', 'img/army-beasts.png', {frameWidth:150,frameHeight:130}],
                 ['army-pirates', 'img/army-pirates.png', {frameWidth:150,frameHeight:130}],
+                ['army-merchantsguild', 'img/army-merchantsguild.png', {frameWidth:150,frameHeight:130}],
                 
         ['button-support-en', 'img/lang/en/button-support.png', {frameWidth:300,frameHeight:85}],
         ['button-more-en', 'img/lang/en/button-more.png', {frameWidth:300,frameHeight:85}],

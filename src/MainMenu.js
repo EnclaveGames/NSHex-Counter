@@ -105,7 +105,7 @@ class MainMenu extends Phaser.Scene {
         var i=0;
         for(var w=0; w<6; w++) {
             for(var h=0; h<4; h++) {
-                if(i<21) {
+                if(i<22) {
                     // if(i > 15) {
                     //     offsetLastLine = 70; // 140
                     // }
@@ -295,6 +295,7 @@ class MainMenu extends Phaser.Scene {
                 ['army-troglodytes-grey', 'img/army-troglodytes-grey.png', {frameWidth:150,frameHeight:130}],
                 ['army-beasts-grey', 'img/army-beasts-grey.png', {frameWidth:150,frameHeight:130}],
                 ['army-pirates-grey', 'img/army-pirates-grey.png', {frameWidth:150,frameHeight:130}],
+                ['army-merchantsguild-grey', 'img/army-merchantsguild-grey.png', {frameWidth:150,frameHeight:130}],
 
 				['army-moloch', 'img/army-moloch.png', {frameWidth:150,frameHeight:130}],
 				['army-hegemony', 'img/army-hegemony.png', {frameWidth:150,frameHeight:130}],
@@ -317,6 +318,7 @@ class MainMenu extends Phaser.Scene {
                 ['army-troglodytes', 'img/army-troglodytes.png', {frameWidth:150,frameHeight:130}],
                 ['army-beasts', 'img/army-beasts.png', {frameWidth:150,frameHeight:130}],
                 ['army-pirates', 'img/army-pirates.png', {frameWidth:150,frameHeight:130}],
+                ['army-merchantsguild', 'img/army-merchantsguild.png', {frameWidth:150,frameHeight:130}],
                 
 				['button-support-en', 'img/lang/en/button-support.png', {frameWidth:300,frameHeight:85}],
 				['button-more-en', 'img/lang/en/button-more.png', {frameWidth:300,frameHeight:85}],
