@@ -105,7 +105,7 @@ class MainMenu extends Phaser.Scene {
         var i=0;
         for(var w=0; w<6; w++) {
             for(var h=0; h<4; h++) {
-                if(i<23) { // TODO: EPT._armies.length
+                if(i<24) { // TODO: EPT._armies.length
                     // if(i > 15) {
                     //     offsetLastLine = 70; // 140
                     // }
@@ -297,6 +297,7 @@ class MainMenu extends Phaser.Scene {
                 ['army-pirates-grey', 'img/army-pirates-grey.png', {frameWidth:150,frameHeight:130}],
                 ['army-merchantsguild-grey', 'img/army-merchantsguild-grey.png', {frameWidth:150,frameHeight:130}],
                 ['army-partisans-grey', 'img/army-partisans-grey.png', {frameWidth:150,frameHeight:130}],
+                ['army-deserttribes-grey', 'img/army-deserttribes-grey.png', {frameWidth:150,frameHeight:130}],
 
 				['army-moloch', 'img/army-moloch.png', {frameWidth:150,frameHeight:130}],
 				['army-hegemony', 'img/army-hegemony.png', {frameWidth:150,frameHeight:130}],
@@ -321,6 +322,7 @@ class MainMenu extends Phaser.Scene {
                 ['army-pirates', 'img/army-pirates.png', {frameWidth:150,frameHeight:130}],
                 ['army-merchantsguild', 'img/army-merchantsguild.png', {frameWidth:150,frameHeight:130}],
                 ['army-partisans', 'img/army-partisans.png', {frameWidth:150,frameHeight:130}],
+                ['army-deserttribes', 'img/army-deserttribes.png', {frameWidth:150,frameHeight:130}],
                 
 				['button-support-en', 'img/lang/en/button-support.png', {frameWidth:300,frameHeight:85}],
 				['button-more-en', 'img/lang/en/button-more.png', {frameWidth:300,frameHeight:85}],

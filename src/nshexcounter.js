@@ -250,17 +250,12 @@ this app to your language?\n\
 Let us know at\n\
 nshex@enclavegames.com!',
       'monetization-title': 'Support us',
-      'monetization-description1': '\
+      'monetization-description': '\
 The NSHex Counter app is free,\n\
-but you can appreciate that fact\n\
-either by becoming a Web Monetized\n\
-power user - a Coil subscriber:',
-      'monetization-description2': '\
-or sending us a few bucks for\n\
-a beer (or coffee!) directly:',
-      'monetization-description3': '\
-Coil subscribers will see here\n\
-statistics of their gameplays.',
+and you can appreciate that fact\n\
+by sending us a few bucks\n\
+for a beer (or coffee!) directly\n\
+through PayPal:',
       'monetization-thanks1': '\
 Thank you for being Coil\'s\n\
 Web Monetized power user\n\
@@ -302,14 +297,12 @@ Enclave Games team.',
       'language-title': 'Język',
       'language-help': '',
       'monetization-title': 'Wesprzyj nas',
-      'monetization-description1': '\
+      'monetization-description': '\
 Aplikacja NSHex Counter jest\n\
 darmowa, ale mimo wszystko nadal\n\
-możesz nas wesprzeć  - albo\n\
-zakładając konto w serwisie Coil:',
-      'monetization-description2': '\
-albo wysyłając kilka złotych\n\
-na piwo (lub kawę!) bezpośrednio:',
+możesz nas wesprzeć wysyłając\n\
+kilka złotych na piwo (lub kawę!)\n\
+bezpośrednio przez PayPal:',
       'monetization-description3': '\
 Subskrybenci Coil będą mogli\n\
 zobaczyć tu statystyki swoich gier.',
@@ -375,9 +368,9 @@ class Boot extends Phaser.Scene {
             'moloch','borgo','outpost','hegemony','newyork','neojungle',
             'smart','vegas','steelpolice','dancer','sharrash','mephisto',
             'doomsday','mississippi','uranopolis','deathbreath','irongang','sandrunners',
-            'troglodytes', 'beasts', 'pirates', 'merchantsguild', 'partisans'
+            'troglodytes', 'beasts', 'pirates', 'merchantsguild', 'partisans', 'deserttribes'
         ];
-        EPT._armyCounts = [22, 13, 15, 18, 20, 17, 16, 15, 18, 4, 17, 17, 16, 17, 20, 15, 9, 16, 12, 15, 16, 19, 16];
+        EPT._armyCounts = [22, 13, 15, 18, 20, 17, 16, 15, 18, 4, 17, 17, 16, 17, 20, 15, 9, 16, 12, 15, 16, 19, 16, 15];
         EPT._tileCounts = [
             [4, 1, 5, 1, 2, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1], // moloch
             [6, 4, 1, 6, 4, 2, 1, 2, 2, 1, 2, 1, 2], // borgo
@@ -401,7 +394,8 @@ class Boot extends Phaser.Scene {
             [2, 6, 1, 3, 1, 2, 4, 2, 2, 2, 2, 1, 3, 2, 1], // beasts
             [5, 3, 1, 2, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 2, 1], // pirates
             [1, 1, 5, 2, 1, 1, 3, 2, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 4], // merchants guild
-            [1, 4, 3, 5, 1, 2, 2, 1, 4, 3, 2, 1, 1, 2, 1, 1] // partisans
+            [1, 4, 3, 5, 1, 2, 2, 1, 4, 3, 2, 1, 1, 2, 1, 1], // partisans
+            [5, 4, 2, 1, 2, 2, 2, 3, 2, 1, 3, 2, 1, 2, 2] // desert tribes
         ];
         this.scene.start('Preloader');
     }
@@ -576,7 +570,7 @@ class MainMenu extends Phaser.Scene {
         var i=0;
         for(var w=0; w<6; w++) {
             for(var h=0; h<4; h++) {
-                if(i<23) { // TODO: EPT._armies.length
+                if(i<24) { // TODO: EPT._armies.length
                     // if(i > 15) {
                     //     offsetLastLine = 70; // 140
                     // }
@@ -768,6 +762,7 @@ class MainMenu extends Phaser.Scene {
                 ['army-pirates-grey', 'img/army-pirates-grey.png', {frameWidth:150,frameHeight:130}],
                 ['army-merchantsguild-grey', 'img/army-merchantsguild-grey.png', {frameWidth:150,frameHeight:130}],
                 ['army-partisans-grey', 'img/army-partisans-grey.png', {frameWidth:150,frameHeight:130}],
+                ['army-deserttribes-grey', 'img/army-deserttribes-grey.png', {frameWidth:150,frameHeight:130}],
 
         ['army-moloch', 'img/army-moloch.png', {frameWidth:150,frameHeight:130}],
         ['army-hegemony', 'img/army-hegemony.png', {frameWidth:150,frameHeight:130}],
@@ -792,6 +787,7 @@ class MainMenu extends Phaser.Scene {
                 ['army-pirates', 'img/army-pirates.png', {frameWidth:150,frameHeight:130}],
                 ['army-merchantsguild', 'img/army-merchantsguild.png', {frameWidth:150,frameHeight:130}],
                 ['army-partisans', 'img/army-partisans.png', {frameWidth:150,frameHeight:130}],
+                ['army-deserttribes', 'img/army-deserttribes.png', {frameWidth:150,frameHeight:130}],
                 
         ['button-support-en', 'img/lang/en/button-support.png', {frameWidth:300,frameHeight:85}],
         ['button-more-en', 'img/lang/en/button-more.png', {frameWidth:300,frameHeight:85}],
@@ -947,13 +943,12 @@ class Settings extends Phaser.Scene {
       this.containerMonet.add([this.logoCoil,this.monetText2]);
     }
     else {
-      this.monetText1 = this.add.text(EPT.world.centerX, 170, EPT.text['monetization-description1'], fontSmall).setOrigin(0.5,0);
-      this.logoCoil = new Button(EPT.world.centerX, 390, 'logo-coil', this.clickCoil, this, 'noframes').setOrigin(0.5, 0.5);
-      this.monetText2 = this.add.text(EPT.world.centerX, 490, EPT.text['monetization-description2'], fontSmall).setOrigin(0.5,0);
-      this.bannerBeer = new Button(EPT.world.centerX, 660, 'button-beer', this.clickBeer, this, 'noframes').setOrigin(0.5, 0.5).setScale(1.25);
-      this.monetText3 = this.add.text(EPT.world.centerX, 760, EPT.text['monetization-description3'], fontSmall).setOrigin(0.5,0);
-      this.containerMonet.add([monetBg,this.navbarMonet,this.monetBack,this.monetTitle,this.monetText1]);
-      this.containerMonet.add([this.logoCoil,this.monetText2,this.bannerBeer,this.monetText3]);
+      this.monetText1 = this.add.text(EPT.world.centerX, 300, EPT.text['monetization-description'], fontSmall).setOrigin(0.5,0);
+      // this.logoCoil = new Button(EPT.world.centerX, 390, 'logo-coil', this.clickCoil, this, 'noframes').setOrigin(0.5, 0.5);
+      // this.monetText2 = this.add.text(EPT.world.centerX, 490, EPT.text['monetization-description2'], fontSmall).setOrigin(0.5,0);
+      this.bannerBeer = new Button(EPT.world.centerX, 600, 'button-beer', this.clickBeer, this, 'noframes').setOrigin(0.5, 0.5).setScale(1.25);
+      this.containerMonet.add([monetBg,this.navbarMonet,this.monetBack,this.monetTitle,this.monetText1,this.bannerBeer]);
+      // this.containerMonet.add([this.logoCoil,this.monetText2,]);
     }
 
     this.cameras.main.fadeIn(250);
@@ -1043,15 +1038,15 @@ class Settings extends Phaser.Scene {
 
       that.monetText1.setScale(0.5, 0.5);
       that.tweens.add({targets: that.monetText1, scaleX: 1, scaleY: 1, duration: 500, delay: 0, ease: 'Cubic.easeOut' });
-      that.logoCoil.setScale(0.5, 0.5);
-      that.tweens.add({targets: that.logoCoil, scaleX: 1, scaleY: 1, duration: 500, delay: 62, ease: 'Cubic.easeOut' });
-      that.monetText2.setScale(0.5, 0.5);
-      that.tweens.add({targets: that.monetText2, scaleX: 1, scaleY: 1, duration: 500, delay: 125, ease: 'Cubic.easeOut' });
-      if(that.bannerBeer && that.monetText3) {
+      // that.logoCoil.setScale(0.5, 0.5);
+      // that.tweens.add({targets: that.logoCoil, scaleX: 1, scaleY: 1, duration: 500, delay: 62, ease: 'Cubic.easeOut' });
+      // that.monetText2.setScale(0.5, 0.5);
+      // that.tweens.add({targets: that.monetText2, scaleX: 1, scaleY: 1, duration: 500, delay: 125, ease: 'Cubic.easeOut' });
+      if(that.bannerBeer && that.monetText1) {
         that.bannerBeer.setScale(0.5, 0.5);
         that.tweens.add({targets: that.bannerBeer, scaleX: 1, scaleY: 1, duration: 500, delay: 187, ease: 'Cubic.easeOut' });
-        that.monetText3.setScale(0.5, 0.5);
-        that.tweens.add({targets: that.monetText3, scaleX: 1, scaleY: 1, duration: 500, delay: 250, ease: 'Cubic.easeOut' });
+        // that.monetText3.setScale(0.5, 0.5);
+        // that.tweens.add({targets: that.monetText3, scaleX: 1, scaleY: 1, duration: 500, delay: 250, ease: 'Cubic.easeOut' });
       }
     }, this);
     this.toggleInput('disable');
@@ -1476,15 +1471,19 @@ class Game extends Phaser.Scene {
                                 if(isNaN(chance)) { chance = 0; }
                                 this.tile[n][i].percent.setText(chance+'%');
 
-                                this.tweens.add({targets: this.tile[n][i].dummy, scaleX: 2, scaleY: 2, alpha: 0, duration: 500, ease: 'Linear', onComplete: function(){
-                                    this.tile[n][i].dummy.setScale(1);
-                                    this.tile[n][i].dummy.setAlpha(1);
+                                var that = this;
+                                this.tweens.add({targets: that.tile[n][i].dummy, scaleX: 2, scaleY: 2, alpha: 0, duration: 500, ease: 'Linear', onComplete: function(){
+                                    that.tile[n][i].dummy.setScale(1);
+                                    that.tile[n][i].dummy.setAlpha(1);
                                     if(tileCount[i-1] == 0) {
-                                        this.tile[n][i].button.setTexture('army-'+armyName+'-grey', i);
-                                        this.tweens.add({targets: this.tile[n][i].dummy, alpha: 0, duration: 500, ease: 'Linear'});
-                                        this.tile[n][i].bar.setFrame(3);
+                                        that.tile[n][i].button.setTexture('army-'+armyName+'-grey', i);
+                                        that.tweens.add({targets: that.tile[n][i].dummy, alpha: 0, duration: 500, ease: 'Linear'});
+                                        that.tile[n][i].bar.setFrame(3);
                                     }
                                 }, onCompleteScope: this});
+
+                                this.tile[n][i].dummy.setScale(1);
+                                this.tile[n][i].dummy.setAlpha(1);
 
                                 this.tile[n][i].undo.input.enabled = true;
                                 this.tile[n][i].undo.setAlpha(1);
