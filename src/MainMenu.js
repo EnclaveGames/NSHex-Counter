@@ -315,7 +315,6 @@ class MainMenu extends Phaser.Scene {
                 ['logo-portalgames', 'img/logo-portalgames.png'],
 				['logo-neuroshimahexpl', 'img/logo-neuroshimahexpl.png'],
                 ['logo-enclavegames', 'img/logo-enclave-black.png'],
-                ['logo-coil', 'img/logo-coil.png'],
                 
                 ['text-areyousure-pl', 'img/lang/pl/text-areyousure.png'],
                 ['text-areyousure-en', 'img/lang/en/text-areyousure.png']

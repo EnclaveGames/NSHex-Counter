@@ -174,6 +174,13 @@ EPT.WakeLock = {
   }
 };
 
+// short vibration feedback where the browser supports it (Android); it follows the Sound setting so a muted phone stays still
+EPT.haptic = function(pattern) {
+  if(navigator.vibrate && EPT.Sfx.status && EPT.Sfx.status['sound']) {
+    try { navigator.vibrate(pattern); } catch(e) {}
+  }
+};
+
 // repeats a 640px wide image across the whole canvas, mirroring every other copy so the seams are not visible
 EPT.strip = function(scene, key, y, mirror) {
   var list = [];
@@ -361,26 +368,15 @@ Would you like to help translate\n\
 this app to your language?\n\
 Let us know at\n\
 nshex@enclavegames.com!',
-      'monetization-title': 'Support us',
-      'monetization-description1': '\
-The NSHex Counter app is free,\n\
-but you can appreciate that fact\n\
-either by becoming a Web Monetized\n\
-power user - a Coil subscriber:',
-      'monetization-description2': '\
-or sending us a few bucks for\n\
-a beer (or coffee!) directly:',
-      'monetization-description3': '\
-Coil subscribers will see here\n\
-statistics of their gameplays.',
-      'monetization-thanks1': '\
-Thank you for being Coil\'s\n\
-Web Monetized power user\n\
-and supporting Enclave Games!',
-      'monetization-thanks2': '\
-We\'re working on delivering\n\
-the ability to track statistics\n\
-of your gameplays - coming soon!',
+      'support-title': 'Support us',
+      'support-text1': '\
+NSHex Counter is free and has\n\
+no ads. If it helped your games,\n\
+you can buy us a beer\n\
+(or coffee!):',
+      'support-text2': '\
+Thank you - it keeps new\n\
+Neuroshima Hex tools coming!',
       'copy-title': 'Copyright',
       'copy-description1': '\
 All rights to the images of the\n\
@@ -414,26 +410,16 @@ Enclave Games team.',
       'settings': 'Ustawienia',
       'language-title': 'Język',
       'language-help': '',
-      'monetization-title': 'Wesprzyj nas',
-      'monetization-description1': '\
-Aplikacja NSHex Counter jest\n\
-darmowa, ale mimo wszystko nadal\n\
-możesz nas wesprzeć  - albo\n\
-zakładając konto w serwisie Coil:',
-      'monetization-description2': '\
-albo wysyłając kilka złotych\n\
-na piwo (lub kawę!) bezpośrednio:',
-      'monetization-description3': '\
-Subskrybenci Coil będą mogli\n\
-zobaczyć tu statystyki swoich gier.',
-      'monetization-thanks1': '\
-Dzięki za bycie aktywnym\n\
-subskrybentem serwisu Coil\n\
-i wspieranie Enclave Games!',
-      'monetization-thanks2': '\
-Pracujemy nad możliwością\n\
-zapisu statystyk Twoich gier - \n\
-taka opcja pojawi się wkrótce!',
+      'support-title': 'Wesprzyj nas',
+      'support-text1': '\
+NSHex Counter jest darmowy\n\
+i bez reklam. Jeśli pomógł\n\
+w Waszych grach, możecie\n\
+postawić nam piwo (lub kawę!):',
+      'support-text2': '\
+Dziękujemy - dzięki temu\n\
+powstają kolejne narzędzia\n\
+do Neuroshima Hex!',
       'copy-title': 'Prawa autorskie',
       'copy-description1': '\
 Wszelkie prawa do grafik żetonów\n\

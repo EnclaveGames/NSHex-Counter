@@ -6,7 +6,6 @@
 	<title>NSHex Counter</title>
 	<meta name="author" content="Enclave Games" />
 	<meta name="description" content="Count your (and your opponent's) tiles to know what you can expect to draw from the remaining ones." />
-	<meta name="monetization" content="$ilp.uphold.com/k4eJGQUDF9nw" />
 	<style>*{margin:0;padding:0;}body{background: #b8afa8 url(img/pattern.png) repeat; overflow:hidden;}</style>
 	<meta property="og:image" content="https://nshex.enclavegames.com/img/banner-nshexcounter.png" />
 	<meta property="og:url" content="https://nshex.enclavegames.com/counter/"/>
@@ -27,6 +26,21 @@
 </head>
 <body>
 <script src="src/start.js"></script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){
+	var controlled = !!navigator.serviceWorker.controller;
+	navigator.serviceWorker.register('sw.js').catch(function(){});
+	// the first install also takes control of the page; only a later change means a new version arrived
+	navigator.serviceWorker.addEventListener('controllerchange',function(){
+		if(!controlled){ controlled = true; return; }
+		var pl = (navigator.language||'').slice(0,2) === 'pl';
+		var bar = document.createElement('div');
+		bar.textContent = pl ? 'Dostępna nowa wersja - dotknij, aby odświeżyć' : 'New version available - tap to reload';
+		bar.style.cssText = 'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);max-width:90%;padding:10px 18px;background:#000;color:#fff;border:2px solid #ffde00;border-radius:24px;font:16px sans-serif;text-align:center;cursor:pointer;z-index:10';
+		bar.onclick = function(){ location.reload(); };
+		document.body.appendChild(bar);
+	});
+});}
+</script>
 </body>
 </html>

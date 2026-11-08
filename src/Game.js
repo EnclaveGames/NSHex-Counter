@@ -313,6 +313,7 @@ class Game extends Phaser.Scene {
         var tile = this.tile[n][i];
         if(tileCount[i-1] > 0) {
             tileCount[i-1] -= 1;
+            EPT.haptic(12);
             this.playerTileCount[n] -= 1;
             this.countNum[n].setText(this.playerTileCount[n]);
             tile.count.setText(tileCount[i-1]+' / '+EPT._tileCounts[EPT._player[n]][i-1]);
@@ -347,6 +348,7 @@ class Game extends Phaser.Scene {
         var tile = this.tile[n][i];
         if(tileCount[i-1] < EPT._tileCounts[EPT._player[n]][i-1]) {
             tileCount[i-1] += 1;
+            EPT.haptic([8, 40, 8]);
             this.playerTileCount[n] += 1;
             this.countNum[n].setText(this.playerTileCount[n]);
             tile.count.setText(tileCount[i-1]+' / '+EPT._tileCounts[EPT._player[n]][i-1]);

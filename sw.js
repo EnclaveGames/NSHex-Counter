@@ -1,5 +1,5 @@
 // generated into sw.js by build.js - do not edit sw.js directly
-var VERSION = 'd62b98464c';
+var VERSION = 'f1504834b7';
 var CACHE = 'nshex-counter-' + VERSION;
 var FILES = [
   "ept.webmanifest",
@@ -123,7 +123,6 @@ var FILES = [
   "img/lang/pl/text-areyousure.png",
   "img/loader.png",
   "img/loading-background.png",
-  "img/logo-coil.png",
   "img/logo-counter.png",
   "img/logo-enclave-black.png",
   "img/logo-enclave.png",

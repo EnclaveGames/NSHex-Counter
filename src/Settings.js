@@ -32,7 +32,7 @@ class Settings extends Phaser.Scene {
 		this.buttonLanguage = new Button(bp[0][0], bp[0][1], 'button-language-'+EPT.Lang.current, this.clickLanguage, this).setOrigin(0.5);
 		this.buttonCredits = new Button(bp[1][0], bp[1][1], 'button-credits-'+EPT.Lang.current, this.clickCredits, this).setOrigin(0.5);
 		this.buttonCopy = new Button(bp[2][0], bp[2][1], 'button-copyright-'+EPT.Lang.current, this.clickCopy, this).setOrigin(0.5);
-		this.buttonMonetization = new Button(bp[3][0], bp[3][1], 'button-support-'+EPT.Lang.current, this.clickMonetization, this).setOrigin(0.5);
+		this.buttonSupport = new Button(bp[3][0], bp[3][1], 'button-support-'+EPT.Lang.current, this.clickSupport, this).setOrigin(0.5);
 		this.buttonMore = new Button(bp[4][0], bp[4][1], 'button-more-'+EPT.Lang.current, this.clickMore, this).setOrigin(0.5);
 
 		EPT.Sfx.update('sound', this.buttonSound, this.textSound);
@@ -91,27 +91,15 @@ class Settings extends Phaser.Scene {
 			this.languageHelp.setText('');
 		}
 
-		this.containerMonet = this.add.container(0, EPT.world.height);
-		var monetBg = EPT.strip(this, 'background', 0, true);
-		this.navbarMonet = EPT.strip(this, 'img-navbar', 0);
-		this.monetBack = new Button(10, 10, 'button-back', function(){this.clickBack('monetization');}, this, 'noframes').setOrigin(0, 0);
-		this.monetTitle = this.add.text(EPT.world.centerX, 45, EPT.text['monetization-title'], fontTitle).setOrigin(0.5, 0.5);
-		if(document.monetization && document.monetization.state === 'started') {
-			this.monetText1 = this.add.text(EPT.world.centerX, 170, EPT.text['monetization-thanks1'], fontSmall).setOrigin(0.5,0);
-			this.logoCoil = new Button(EPT.world.centerX, wide ? 330 : 390, 'logo-coil', this.clickCoil, this, 'noframes').setOrigin(0.5, 0.5);
-			this.monetText2 = this.add.text(EPT.world.centerX, wide ? 430 : 500, EPT.text['monetization-thanks2'], fontSmall).setOrigin(0.5,0);
-			this.containerMonet.add(monetBg.concat(this.navbarMonet, [this.monetBack,this.monetTitle,this.monetText1]));
-			this.containerMonet.add([this.logoCoil,this.monetText2]);
-		}
-		else {
-			this.monetText1 = this.add.text(L, 170, EPT.text['monetization-description1'], fontSmall).setOrigin(0.5,0);
-			this.logoCoil = new Button(L, 390, 'logo-coil', this.clickCoil, this, 'noframes').setOrigin(0.5, 0.5);
-			this.monetText2 = this.add.text(L, 490, EPT.text['monetization-description2'], fontSmall).setOrigin(0.5,0);
-			this.bannerBeer = new Button(R, wide ? 330 : 660, 'button-beer', this.clickBeer, this, 'noframes').setOrigin(0.5, 0.5).setScale(1.25);
-			this.monetText3 = this.add.text(R, wide ? 440 : 760, EPT.text['monetization-description3'], fontSmall).setOrigin(0.5,0);
-			this.containerMonet.add(monetBg.concat(this.navbarMonet, [this.monetBack,this.monetTitle,this.monetText1]));
-			this.containerMonet.add([this.logoCoil,this.monetText2,this.bannerBeer,this.monetText3]);
-		}
+		this.containerSupport = this.add.container(0, EPT.world.height);
+		var supportBg = EPT.strip(this, 'background', 0, true);
+		this.navbarSupport = EPT.strip(this, 'img-navbar', 0);
+		this.supportBack = new Button(10, 10, 'button-back', function(){this.clickBack('support');}, this, 'noframes').setOrigin(0, 0);
+		this.supportTitle = this.add.text(EPT.world.centerX, 45, EPT.text['support-title'], fontTitle).setOrigin(0.5, 0.5);
+		this.supportText1 = this.add.text(EPT.world.centerX, 190, EPT.text['support-text1'], fontSmall).setOrigin(0.5,0);
+		this.bannerBeer = new Button(EPT.world.centerX, 400, 'button-beer', this.clickBeer, this, 'noframes').setOrigin(0.5, 0.5).setScale(1.5);
+		this.supportText2 = this.add.text(EPT.world.centerX, 500, EPT.text['support-text2'], fontSmall).setOrigin(0.5,0);
+		this.containerSupport.add(supportBg.concat(this.navbarSupport, [this.supportBack,this.supportTitle,this.supportText1,this.bannerBeer,this.supportText2]));
 
 		this.cameras.main.fadeIn(250);
 	}
@@ -134,8 +122,8 @@ class Settings extends Phaser.Scene {
 		this.tweens.add({targets: this.buttonCredits, scaleX: 1, scaleY: 1, duration: 500, delay: 187, ease: 'Cubic.easeOut' }); // 375
 		this.buttonCopy.setScale(0.5);
 		this.tweens.add({targets: this.buttonCopy, scaleX: 1, scaleY: 1, duration: 500, delay: 250, ease: 'Cubic.easeOut' }); // 500
-		this.buttonMonetization.setScale(0.5);
-		this.tweens.add({targets: this.buttonMonetization, scaleX: 1, scaleY: 1, duration: 500, delay: 312, ease: 'Cubic.easeOut' }); // 625
+		this.buttonSupport.setScale(0.5);
+		this.tweens.add({targets: this.buttonSupport, scaleX: 1, scaleY: 1, duration: 500, delay: 312, ease: 'Cubic.easeOut' }); // 625
 		this.buttonMore.setScale(0.5);
 		this.tweens.add({targets: this.buttonMore, scaleX: 1, scaleY: 1, duration: 500, delay: 375, ease: 'Cubic.easeOut' });
 	}
@@ -192,27 +180,21 @@ class Settings extends Phaser.Scene {
 		this.toggleInput('disable');
 		this.screenName = 'copyright';
 	}
-	clickMonetization() {
+	clickSupport() {
 		EPT.Sfx.play('click');
 		var that = this;
 		EPT.fadeOutIn(function(){
-			that.containerMonet.y = 0;
+			that.containerSupport.y = 0;
 
-			that.monetText1.setScale(0.5, 0.5);
-			that.tweens.add({targets: that.monetText1, scaleX: 1, scaleY: 1, duration: 500, delay: 0, ease: 'Cubic.easeOut' });
-			that.logoCoil.setScale(0.5, 0.5);
-			that.tweens.add({targets: that.logoCoil, scaleX: 1, scaleY: 1, duration: 500, delay: 62, ease: 'Cubic.easeOut' });
-			that.monetText2.setScale(0.5, 0.5);
-			that.tweens.add({targets: that.monetText2, scaleX: 1, scaleY: 1, duration: 500, delay: 125, ease: 'Cubic.easeOut' });
-			if(that.bannerBeer && that.monetText3) {
-				that.bannerBeer.setScale(0.5, 0.5);
-				that.tweens.add({targets: that.bannerBeer, scaleX: 1, scaleY: 1, duration: 500, delay: 187, ease: 'Cubic.easeOut' });
-				that.monetText3.setScale(0.5, 0.5);
-				that.tweens.add({targets: that.monetText3, scaleX: 1, scaleY: 1, duration: 500, delay: 250, ease: 'Cubic.easeOut' });
-			}
+			that.supportText1.setScale(0.5, 0.5);
+			that.tweens.add({targets: that.supportText1, scaleX: 1, scaleY: 1, duration: 500, delay: 0, ease: 'Cubic.easeOut' });
+			that.bannerBeer.setScale(0.75);
+			that.tweens.add({targets: that.bannerBeer, scaleX: 1.5, scaleY: 1.5, duration: 500, delay: 62, ease: 'Cubic.easeOut' });
+			that.supportText2.setScale(0.5, 0.5);
+			that.tweens.add({targets: that.supportText2, scaleX: 1, scaleY: 1, duration: 500, delay: 125, ease: 'Cubic.easeOut' });
 		}, this);
 		this.toggleInput('disable');
-		this.screenName = 'monetization';
+		this.screenName = 'support';
 	}
 	clickLanguage() {
 		EPT.Sfx.play('click');
@@ -269,8 +251,8 @@ class Settings extends Phaser.Scene {
 							that.containerCopy.y = EPT.world.height;
 							break;
 						}
-						case 'monetization': {
-							that.containerMonet.y = EPT.world.height;
+						case 'support': {
+							that.containerSupport.y = EPT.world.height;
 							break;
 						}
 						default: {}
@@ -292,7 +274,7 @@ class Settings extends Phaser.Scene {
 			this.buttonLanguage.input.enabled = false;
 			this.buttonCredits.input.enabled = false;
 			this.buttonCopy.input.enabled = false;
-			this.buttonMonetization.input.enabled = false;
+			this.buttonSupport.input.enabled = false;
 			this.buttonMore.input.enabled = false;
 		}
 		else { // enable
@@ -302,7 +284,7 @@ class Settings extends Phaser.Scene {
 			this.buttonLanguage.input.enabled = true;
 			this.buttonCredits.input.enabled = true;
 			this.buttonCopy.input.enabled = true;
-			this.buttonMonetization.input.enabled = true;
+			this.buttonSupport.input.enabled = true;
 			this.buttonMore.input.enabled = true;
 		}
 	}
@@ -321,9 +303,5 @@ class Settings extends Phaser.Scene {
 	clickNeuroshimaHexpl() {
 		EPT.Sfx.play('click');
 		window.top.location.href = 'https://neuroshimahex.pl/';
-	}
-	clickCoil() {
-		EPT.Sfx.play('click');
-		window.top.location.href = 'https://coil.com/';
 	}
 };
