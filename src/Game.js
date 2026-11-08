@@ -282,15 +282,15 @@ class Game extends Phaser.Scene {
             var col = (i-1)%layout.cols;
             var inRow = Math.min(layout.cols, count-row*layout.cols);
             var newX = (640-inRow*layout.cellW)/2 + (col+0.5)*layout.cellW;
-            var newY = layout.top + (row+0.5)*layout.cellH - 3*s;
+            var newY = layout.top + (row+0.5)*layout.cellH - 8*s;
             this.tile[n][i].button = new Button(newX, newY, 'army-'+armyName, function(i){
                 return function(){ this.removeTile(n, i); }
             }(i), this, 'noframes').setFrame(i).setScale(s);
             this.tile[n][i].dummy = this.add.sprite(newX, newY, 'army-'+armyName, i).setScale(s);
             this.tile[n][i].border = this.add.sprite(newX, newY, 'hex-border-color').setScale(s);
             this.tile[n][i].percent = this.add.text(newX-30*s, newY-60*s, this.chanceText(n, i), this.fontMedium).setOrigin(0.5, 0.5).setScale(s);
-            this.tile[n][i].bar = this.add.sprite(newX, newY+70*s, 'button-small', 0).setScale(s);
-            this.tile[n][i].count = this.add.text(newX, newY+67*s, tileCount[i-1]+' / '+EPT._tileCounts[EPT._player[n]][i-1], this.fontSmall).setOrigin(0.5, 0.5).setScale(s);
+            this.tile[n][i].bar = this.add.sprite(newX, newY+83*s, 'button-small', 0).setScale(s*0.85);
+            this.tile[n][i].count = this.add.text(newX, newY+80*s, tileCount[i-1]+' / '+EPT._tileCounts[EPT._player[n]][i-1], this.fontSmall).setOrigin(0.5, 0.5).setScale(s*0.9);
             this.tile[n][i].undo = new Button(newX+60*s, newY-30*s, 'button-undo', function(i){
                 return function(){ this.restoreTile(n, i); }
             }(i), this).setScale(s);
