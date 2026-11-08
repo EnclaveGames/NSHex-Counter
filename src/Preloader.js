@@ -3,7 +3,7 @@ class Preloader extends Phaser.Scene {
         super('Preloader');
     }
     preload() {
-		this.add.sprite(0, 0, 'background-black').setOrigin(0, 0);
+		this.add.sprite(0, 0, 'background-black').setOrigin(0, 0).setDisplaySize(EPT.world.width, EPT.world.height);
         var logoCounter = this.add.sprite(EPT.world.centerX, 150, 'logo-counter');
         logoCounter.setOrigin(0.5, 0.5);
 		var loadingBg = this.add.sprite(EPT.world.centerX, EPT.world.centerY-80, 'loading-background');

@@ -4,23 +4,36 @@ class MainMenu extends Phaser.Scene {
         this.bgFilesLoaded = false;
     }
     create() {
-        this.add.sprite(0, 0, 'background').setOrigin(0, 0);
-        var topbar = this.add.sprite(0, 0, 'img-topbar').setOrigin(0, 0);
+        EPT.setWorldSize(this, EPT.isWide());
+        EPT.watchLayout(this);
+        var wide = EPT.world.width > 640;
+        var cx = EPT.world.centerX;
+        // everything on the left/right half in landscape, one column in portrait
+        this.pos = wide ? {
+            logo: {x: 320, y: 200}, intro: {x: 320, y: 300}, tiles: {x: 320, y: 560},
+            player1: {x: 960, y: 230}, player2: {x: 960, y: 350}, start: {x: 960, y: 520}
+        } : {
+            logo: {x: cx, y: 150}, intro: {x: cx, y: 250}, tiles: {x: cx, y: EPT.world.height-100},
+            player1: {x: cx, y: 420}, player2: {x: cx, y: 540}, start: {x: cx, y: EPT.world.height-250}
+        };
+
+        EPT.strip(this, 'background', 0, true);
+        EPT.strip(this, 'img-topbar', 0);
 
         this.player1Selected = false;
         this.player2Selected = false;
         this.waitingForSettings = false;
 
-        this.logoCounter = this.add.sprite(EPT.world.centerX, 150, 'logo-counter', 1);
+        this.logoCounter = this.add.sprite(this.pos.logo.x, this.pos.logo.y, 'logo-counter', 1);
         this.logoCounter.setOrigin(0.5, 0.5);
 
 		var fontMenuIntro = { font: EPT.text['STYLE']+'30px '+EPT.text['FONT'], fill: '#000', align: 'center' };
-		this.add.text(EPT.world.centerX, 250, EPT.text['menu-intro'], fontMenuIntro).setOrigin(0.5, 0);
+		this.add.text(this.pos.intro.x, this.pos.intro.y, EPT.text['menu-intro'], fontMenuIntro).setOrigin(0.5, 0);
 
-        this.buttonPlayer1 = new Button(EPT.world.centerX, 420, 'button-player1-'+EPT.Lang.current, this.clickPlayer1, this).setOrigin(0.5);
-        this.buttonPlayer2 = new Button(EPT.world.centerX, 540, 'button-player2-'+EPT.Lang.current, this.clickPlayer2, this).setOrigin(0.5);
+        this.buttonPlayer1 = new Button(this.pos.player1.x, this.pos.player1.y, 'button-player1-'+EPT.Lang.current, this.clickPlayer1, this).setOrigin(0.5);
+        this.buttonPlayer2 = new Button(this.pos.player2.x, this.pos.player2.y, 'button-player2-'+EPT.Lang.current, this.clickPlayer2, this).setOrigin(0.5);
 
-        this.buttonStart = new Button(EPT.world.centerX, EPT.world.height-250, 'button-start-'+EPT.Lang.current, this.clickStart, this, 'noframes');
+        this.buttonStart = new Button(this.pos.start.x, this.pos.start.y, 'button-start-'+EPT.Lang.current, this.clickStart, this, 'noframes');
         this.buttonStart.setOrigin(0.5, 0.5).setAlpha(0.5);
         this.buttonStart.setFrame(3);
         this.buttonStart.input.enabled = false;
@@ -50,7 +63,7 @@ class MainMenu extends Phaser.Scene {
             this.player2Selected = true;
             if(this.player1Selected && this.player2Selected) {
                 this.buttonStart.destroy();
-                this.buttonStart = new Button(EPT.world.centerX, EPT.world.height-250, 'button-start-'+EPT.Lang.current, this.clickStart, this).setOrigin(0.5);
+                this.buttonStart = new Button(this.pos.start.x, this.pos.start.y, 'button-start-'+EPT.Lang.current, this.clickStart, this).setOrigin(0.5);
                 this.buttonStart.setScale(0.5);
                 this.tweens.add({targets: this.buttonStart, scaleX: 1, scaleY: 1, duration: 500, delay: 250, ease: 'Cubic.easeOut' });
             }
@@ -62,31 +75,33 @@ class MainMenu extends Phaser.Scene {
 		this.buttonPlayer2.setScale(0.5);
         this.tweens.add({targets: this.buttonPlayer2, scaleX: 1, scaleY: 1, duration: 500, delay: 125, ease: 'Cubic.easeOut' });
 
-        var tiles = this.add.sprite(EPT.world.centerX, EPT.world.height-100, 'img-tiles');
+        var tiles = this.add.sprite(this.pos.tiles.x, this.pos.tiles.y, 'img-tiles');
         tiles.setOrigin(0.5, 0.5);
 
         this.buttonSettings = new Button(EPT.world.width-20, EPT.world.height-20, 'button-settings', this.clickSettings, this, 'noframes').setOrigin(1, 1);
 
         this.cameras.main.fadeIn(250);
 
-        this.time.addEvent({
-            delay: 500,
-            callback: function() {
-                this.startPreloadInTheBackground();
-            },
-            callbackScope: this
-          }, this);
+        if(!this.bgFilesLoaded) {
+            this.time.addEvent({
+                delay: 500,
+                callback: function() {
+                    this.startPreloadInTheBackground();
+                },
+                callbackScope: this
+            }, this);
+        }
     }
     initArmySelection(number) {
         this.selection = this.add.container(EPT.world.centerX, EPT.world.centerY-200+number*100);
         this.selection.setScale(0);
         this.buttonPlayer1.input.enabled = false;
         this.buttonPlayer2.input.enabled = false;
-        this.selectionBackground = this.add.sprite(0, 0, 'background').setOrigin(0, 0);
-        this.selectionNavbar = this.add.sprite(0, 0, 'img-navbar').setOrigin(0, 0);
+        this.selectionBackground = EPT.strip(this, 'background', 0, true);
+        this.selectionNavbar = EPT.strip(this, 'img-navbar', 0);
         var fontTitle = { font: EPT.text['STYLE']+'40px '+EPT.text['FONT'], fill: '#fff', align: 'center' };
 		this.selectionTitle = this.add.text(EPT.world.centerX, 45, EPT.text['selection'+number], fontTitle).setOrigin(0.5, 0.5);
-        this.selection.add([this.selectionBackground,this.selectionNavbar,this.selectionTitle]);
+        this.selection.add(this.selectionBackground.concat(this.selectionNavbar, [this.selectionTitle]));
         this.showTiles(number);
         if(this.bgFilesLoaded) {
             this.tweens.add({targets: this.selection, x: 0, y: 0, scaleX: 1, scaleY: 1, duration: 350, ease: 'Back' }); // Cubic.easeOut
@@ -99,28 +114,23 @@ class MainMenu extends Phaser.Scene {
     }
     showTiles(number) {
         this.tiles = this.add.container();
-        var offsetLeft = 110;
-        var offsetTop = 180;
-        var offsetLastLine = 0;
-        var i=0;
-        for(var w=0; w<6; w++) {
-            for(var h=0; h<4; h++) {
-                if(i<24) { // TODO: EPT._armies.length
-                    // if(i > 15) {
-                    //     offsetLastLine = 70; // 140
-                    // }
-                    var newButton = new Button(offsetLastLine+offsetLeft+h*140, offsetTop+w*135, 'tiles-hqs', function(i){
-                        return function(){
-                            EPT._player[number] = i;
-                            this.clickReturn(number);
-                        }
-                    }(i), this, 'noframes').setFrame(i).setScale(0.75);
-                    var newBorder = this.add.sprite(offsetLastLine+offsetLeft+h*140, offsetTop+w*135, 'hex-border-pattern').setScale(0.75);
-                    var newLabel = this.add.sprite(offsetLastLine+offsetLeft+h*140, offsetTop+w*135+60, 'hex-labels-'+EPT.Lang.current, i+1).setScale(0.75);
-                    this.selection.add([newButton,newBorder,newLabel]);
-                    i++;
+        var wide = EPT.world.width > 640;
+        var cols = wide ? 8 : 4;
+        var stepX = wide ? 150 : 140, stepY = wide ? 190 : 135;
+        var offsetLeft = (EPT.world.width-(cols-1)*stepX)/2;
+        var offsetTop = wide ? 230 : 180;
+        for(var i = 0; i < 24; i++) { // TODO: EPT._armies.length
+            var x = offsetLeft+(i%cols)*stepX;
+            var y = offsetTop+Math.floor(i/cols)*stepY;
+            var newButton = new Button(x, y, 'tiles-hqs', function(i){
+                return function(){
+                    EPT._player[number] = i;
+                    this.clickReturn(number);
                 }
-            }
+            }(i), this, 'noframes').setFrame(i).setScale(0.75);
+            var newBorder = this.add.sprite(x, y, 'hex-border-pattern').setScale(0.75);
+            var newLabel = this.add.sprite(x, y+60, 'hex-labels-'+EPT.Lang.current, i+1).setScale(0.75);
+            this.selection.add([newButton,newBorder,newLabel]);
         }
     }
     clickReturn(number) {
@@ -183,10 +193,10 @@ class MainMenu extends Phaser.Scene {
                 delay: 300,
                 callback: function() {
                     this.buttonStart.destroy();
-                    this.buttonStart = new Button(EPT.world.centerX, EPT.world.height-250, 'button-start-'+EPT.Lang.current, this.clickStart, this);
+                    this.buttonStart = new Button(this.pos.start.x, this.pos.start.y, 'button-start-'+EPT.Lang.current, this.clickStart, this);
                     this.buttonStart.setOrigin(0.5, 0.5);
                     this.buttonStart.setAlpha(0.5);
-                    var dummyStart = this.add.sprite(EPT.world.centerX, EPT.world.height-250, 'button-start-'+EPT.Lang.current, 3);
+                    var dummyStart = this.add.sprite(this.pos.start.x, this.pos.start.y, 'button-start-'+EPT.Lang.current, 3);
                     dummyStart.setAlpha(0.5);
                     this.tweens.add({targets: dummyStart, alpha: 0, duration: 350, ease: 'Linear', onComplete: function(){
                         dummyStart.destroy();

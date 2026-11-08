@@ -108,6 +108,38 @@ EPT.setWorldSize = function(scene, wide) {
   EPT.world = { width: width, height: height, centerX: width/2, centerY: height/2 };
 };
 
+// repeats a 640px wide image across the whole canvas, mirroring every other copy so the seams are not visible
+EPT.strip = function(scene, key, y, mirror) {
+  var list = [];
+  for(var x = 0; x < EPT.world.width; x += 640) {
+    var sprite = scene.add.sprite(x, y, key).setOrigin(0, 0);
+    if(mirror && (x/640)%2 == 1) { sprite.setFlipX(true); }
+    list.push(sprite);
+  }
+  return list;
+};
+
+// scenes built for one layout restart when the window changes to the other one
+EPT.watchLayout = function(scene) {
+  var wide = EPT.world.width > 640;
+  var timer = null;
+  var onResize = function() {
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+      if(scene.sys && scene.sys.isActive() && EPT.isWide() !== wide) {
+        scene.scene.restart();
+      }
+    }, 200);
+  };
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onResize);
+  scene.events.once('shutdown', function() {
+    clearTimeout(timer);
+    window.removeEventListener('resize', onResize);
+    window.removeEventListener('orientationchange', onResize);
+  });
+};
+
 EPT.fadeOutScene = function(sceneName, context) {
   context.cameras.main.fadeOut(250);
   context.time.addEvent({

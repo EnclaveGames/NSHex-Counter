@@ -3,10 +3,15 @@ class Settings extends Phaser.Scene {
         super('Settings');
     }
     create() {
-		this.add.sprite(0, 0, 'background').setOrigin(0, 0);
+		EPT.setWorldSize(this, EPT.isWide());
+		EPT.watchLayout(this);
+		var wide = EPT.world.width > 640;
+		var cx = EPT.world.centerX;
+		var L = wide ? 320 : cx, R = wide ? 960 : cx; // left and right column in landscape
+		EPT.strip(this, 'background', 0, true);
 		this.screenName = 'settings';
 
-		this.navbar = this.add.sprite(0, 0, 'img-navbar').setOrigin(0, 0);
+		this.navbar = EPT.strip(this, 'img-navbar', 0);
 
 		this.buttonBack = new Button(10, 10, 'button-back', this.clickBack, this, 'noframes').setOrigin(0, 0);
 
@@ -19,15 +24,16 @@ class Settings extends Phaser.Scene {
 		this.titleSettings.setOrigin(0.5, 0.5);
 		
 		this.containerSettingsBar = this.add.container(0, 0);
-		this.containerSettingsBar.add([this.navbar,this.buttonBack,this.titleSettings]);
+		this.containerSettingsBar.add(this.navbar.concat([this.buttonBack,this.titleSettings]));
 
 		this.buttonSound = new Button(EPT.world.centerX-100, 190, 'button-sound-on', this.clickSound, this).setOrigin(0.5);
 		this.buttonMusic = new Button(EPT.world.centerX+100, 190, 'button-music-on', this.clickMusic, this).setOrigin(0.5);
-		this.buttonLanguage = new Button(EPT.world.centerX, 320, 'button-language-'+EPT.Lang.current, this.clickLanguage, this).setOrigin(0.5);
-		this.buttonCredits = new Button(EPT.world.centerX, 450, 'button-credits-'+EPT.Lang.current, this.clickCredits, this).setOrigin(0.5);
-		this.buttonCopy = new Button(EPT.world.centerX, 580, 'button-copyright-'+EPT.Lang.current, this.clickCopy, this).setOrigin(0.5);
-		this.buttonMonetization = new Button(EPT.world.centerX, 710, 'button-support-'+EPT.Lang.current, this.clickMonetization, this).setOrigin(0.5);
-		this.buttonMore = new Button(EPT.world.centerX, 840, 'button-more-'+EPT.Lang.current, this.clickMore, this).setOrigin(0.5);
+		var bp = wide ? [[cx-190,320],[cx+190,320],[cx-190,440],[cx+190,440],[cx,560]] : [[cx,320],[cx,450],[cx,580],[cx,710],[cx,840]];
+		this.buttonLanguage = new Button(bp[0][0], bp[0][1], 'button-language-'+EPT.Lang.current, this.clickLanguage, this).setOrigin(0.5);
+		this.buttonCredits = new Button(bp[1][0], bp[1][1], 'button-credits-'+EPT.Lang.current, this.clickCredits, this).setOrigin(0.5);
+		this.buttonCopy = new Button(bp[2][0], bp[2][1], 'button-copyright-'+EPT.Lang.current, this.clickCopy, this).setOrigin(0.5);
+		this.buttonMonetization = new Button(bp[3][0], bp[3][1], 'button-support-'+EPT.Lang.current, this.clickMonetization, this).setOrigin(0.5);
+		this.buttonMore = new Button(bp[4][0], bp[4][1], 'button-more-'+EPT.Lang.current, this.clickMore, this).setOrigin(0.5);
 
 		EPT.Sfx.update('sound', this.buttonSound, this.textSound);
 		EPT.Sfx.update('music', this.buttonMusic, this.textMusic);
@@ -35,75 +41,75 @@ class Settings extends Phaser.Scene {
 		this.clickSettings();		
 
 		var offsetTopCredits = 40;
-		var offsetTopCrew = 540;
+		var offsetTopCrew = wide ? 180 : 540;
 		this.containerCredits = this.add.container(0, EPT.world.height);
-		var creditsBg = this.add.sprite(0, 0, 'background').setOrigin(0, 0);
-		this.navbarCredits = this.add.sprite(0, 0, 'img-navbar').setOrigin(0);
+		var creditsBg = EPT.strip(this, 'background', 0, true);
+		this.navbarCredits = EPT.strip(this, 'img-navbar', 0);
 		this.creditsBack = new Button(10, 10, 'button-back', function(){this.clickBack('credits');}, this, 'noframes').setOrigin(0, 0);
 		this.titleCredits = this.add.text(EPT.world.centerX, offsetTopCredits+5, EPT.text['credits'], fontTitle).setOrigin(0.5, 0.5);	
-		this.titleCreditsApp = this.add.text(EPT.world.centerX, offsetTopCredits+140, EPT.text['appname'], fontSubtitle).setOrigin(0.5,0);
-		this.titleCreditsText = this.add.text(EPT.world.centerX, offsetTopCredits+200, EPT.text['madeby'], fontSmall).setOrigin(0.5,0);
-		this.titleCreditsLogo = this.add.sprite(EPT.world.centerX, offsetTopCredits+270, 'logo-enclave', 1).setOrigin(0.5,0);
+		this.titleCreditsApp = this.add.text(L, offsetTopCredits+140, EPT.text['appname'], fontSubtitle).setOrigin(0.5,0);
+		this.titleCreditsText = this.add.text(L, offsetTopCredits+200, EPT.text['madeby'], fontSmall).setOrigin(0.5,0);
+		this.titleCreditsLogo = this.add.sprite(L, offsetTopCredits+270, 'logo-enclave', 1).setOrigin(0.5,0);
 		this.titleCreditsLogo.setInteractive({ useHandCursor: true });
 		this.titleCreditsLogo.on('pointerdown', function() { this.clickEnclave(); }, this);
-		this.titleCreditsUrl = this.add.text(EPT.world.centerX, offsetTopCredits+390, 'enclavegames.com', fontSmall).setOrigin(0.5,0);
+		this.titleCreditsUrl = this.add.text(L, offsetTopCredits+390, 'enclavegames.com', fontSmall).setOrigin(0.5,0);
 		this.titleCreditsUrl.setInteractive({ useHandCursor: true });
 		this.titleCreditsUrl.on('pointerdown', function() { this.clickEnclave(); }, this);
-		this.titleCrew = this.add.text(EPT.world.centerX, offsetTopCrew, EPT.text['team'], fontSubtitle).setOrigin(0.5,0);
-		this.titleCrewAndrzej = this.add.text(EPT.world.centerX, offsetTopCrew+80, 'Andrzej Mazur - '+EPT.text['coding'], fontSmall).setOrigin(0.5,0);
-		this.titleCrewEwa = this.add.text(EPT.world.centerX, offsetTopCrew+140, 'Ewa Mazur - '+EPT.text['design'], fontSmall).setOrigin(0.5,0);
-		this.titleCrewKasia = this.add.text(EPT.world.centerX, offsetTopCrew+200, 'Kasia Mazur - '+EPT.text['testing'], fontSmall).setOrigin(0.5,0);
-		this.titleCreditsMusic = this.add.text(EPT.world.centerX, offsetTopCrew+320, EPT.text['musicby']+' Alexandr Zhelanov', fontSmall).setOrigin(0.5,0);
-		this.containerCredits.add([creditsBg,this.navbarCredits,this.creditsBack,this.titleCredits,this.titleCreditsApp,this.titleCreditsText,this.titleCreditsLogo,this.titleCreditsUrl]);
+		this.titleCrew = this.add.text(R, offsetTopCrew, EPT.text['team'], fontSubtitle).setOrigin(0.5,0);
+		this.titleCrewAndrzej = this.add.text(R, offsetTopCrew+80, 'Andrzej Mazur - '+EPT.text['coding'], fontSmall).setOrigin(0.5,0);
+		this.titleCrewEwa = this.add.text(R, offsetTopCrew+140, 'Ewa Mazur - '+EPT.text['design'], fontSmall).setOrigin(0.5,0);
+		this.titleCrewKasia = this.add.text(R, offsetTopCrew+200, 'Kasia Mazur - '+EPT.text['testing'], fontSmall).setOrigin(0.5,0);
+		this.titleCreditsMusic = this.add.text(R, offsetTopCrew+320, EPT.text['musicby']+' Alexandr Zhelanov', fontSmall).setOrigin(0.5,0);
+		this.containerCredits.add(creditsBg.concat(this.navbarCredits, [this.creditsBack,this.titleCredits,this.titleCreditsApp,this.titleCreditsText,this.titleCreditsLogo,this.titleCreditsUrl]));
 		this.containerCredits.add([this.titleCrew,this.titleCrewAndrzej,this.titleCrewEwa,this.titleCrewKasia,this.titleCreditsMusic]);
 
 		this.containerCopy = this.add.container(0, EPT.world.height);
-		var copyBg = this.add.sprite(0, 0, 'background').setOrigin(0, 0);
-		this.navbarCopy = this.add.sprite(0, 0, 'img-navbar').setOrigin(0);
+		var copyBg = EPT.strip(this, 'background', 0, true);
+		this.navbarCopy = EPT.strip(this, 'img-navbar', 0);
 		this.copyBack = new Button(10, 10, 'button-back', function(){this.clickBack('copyright');}, this, 'noframes').setOrigin(0, 0);
 		this.titleCopy = this.add.text(EPT.world.centerX, 45, EPT.text['copy-title'], fontTitle).setOrigin(0.5, 0.5);	
-		this.titleCopyText1 = this.add.text(EPT.world.centerX, 150, EPT.text['copy-description1'], fontSmall).setOrigin(0.5,0);
-		this.logoPortalGames = new Button(EPT.world.centerX, 370, 'logo-portalgames', this.clickPortal, this, 'noframes').setOrigin(0.5, 0.5);
-		this.titleCopyText2 = this.add.text(EPT.world.centerX, 470, EPT.text['copy-description2'], fontSmall).setOrigin(0.5,0);
-		this.logoNeuroshimaHexpl = new Button(EPT.world.centerX, 630, 'logo-neuroshimahexpl', this.clickNeuroshimaHexpl, this, 'noframes').setOrigin(0.5, 0.5);
-		this.titleCopyText3 = this.add.text(EPT.world.centerX, 700, EPT.text['copy-description3'], fontSmall).setOrigin(0.5,0);
-		this.logoEnclaveGames = new Button(EPT.world.centerX, 850, 'logo-enclavegames', this.clickEnclave, this, 'noframes').setOrigin(0.5, 0.5);
-		this.containerCopy.add([copyBg,this.navbarCopy,this.copyBack,this.titleCopy,this.titleCopyText1,this.logoPortalGames]);
+		this.titleCopyText1 = this.add.text(L, 150, EPT.text['copy-description1'], fontSmall).setOrigin(0.5,0);
+		this.logoPortalGames = new Button(L, 370, 'logo-portalgames', this.clickPortal, this, 'noframes').setOrigin(0.5, 0.5);
+		this.titleCopyText2 = this.add.text(L, 470, EPT.text['copy-description2'], fontSmall).setOrigin(0.5,0);
+		this.logoNeuroshimaHexpl = new Button(R, wide ? 240 : 630, 'logo-neuroshimahexpl', this.clickNeuroshimaHexpl, this, 'noframes').setOrigin(0.5, 0.5);
+		this.titleCopyText3 = this.add.text(R, wide ? 310 : 700, EPT.text['copy-description3'], fontSmall).setOrigin(0.5,0);
+		this.logoEnclaveGames = new Button(R, wide ? 480 : 850, 'logo-enclavegames', this.clickEnclave, this, 'noframes').setOrigin(0.5, 0.5);
+		this.containerCopy.add(copyBg.concat(this.navbarCopy, [this.copyBack,this.titleCopy,this.titleCopyText1,this.logoPortalGames]));
 		this.containerCopy.add([this.titleCopyText2,this.logoNeuroshimaHexpl,this.titleCopyText3,this.logoEnclaveGames]);
 
 		this.containerLanguage = this.add.container(0, EPT.world.height);
-		var languageBg = this.add.sprite(0, 0, 'background').setOrigin(0, 0);
-		this.navbarLanguage = this.add.sprite(0, 0, 'img-navbar').setOrigin(0);
+		var languageBg = EPT.strip(this, 'background', 0, true);
+		this.navbarLanguage = EPT.strip(this, 'img-navbar', 0);
 		this.languageBack = new Button(10, 10, 'button-back', function(){this.clickBack('language');}, this, 'noframes').setOrigin(0, 0);
 		this.titleLanguage = this.add.text(EPT.world.centerX, 45, EPT.text['language-title'], fontTitle).setOrigin(0.5);
 		this.languageEnglish = new Button(EPT.world.centerX, 270, 'button-language-english-on', function(){ EPT.Sfx.play('click'); this.clickLanguageChange('en'); }, this).setOrigin(0.5);
 		this.languagePolish = new Button(EPT.world.centerX, 420, 'button-language-polish-off', function(){ EPT.Sfx.play('click'); this.clickLanguageChange('pl'); }, this).setOrigin(0.5);
-		this.languageHelp = this.add.text(EPT.world.centerX, 850, EPT.text['language-help'], fontSmall).setOrigin(0.5);
-		this.containerLanguage.add([languageBg,this.navbarLanguage,this.languageBack,this.titleLanguage,this.languageEnglish,this.languagePolish,this.languageHelp]);
+		this.languageHelp = this.add.text(EPT.world.centerX, wide ? 600 : 850, EPT.text['language-help'], fontSmall).setOrigin(0.5);
+		this.containerLanguage.add(languageBg.concat(this.navbarLanguage, [this.languageBack,this.titleLanguage,this.languageEnglish,this.languagePolish,this.languageHelp]));
 		this.clickLanguageChange(EPT.Lang.current);
 		if(!EPT.Lang.foreign) {
 			this.languageHelp.setText('');
 		}
 
 		this.containerMonet = this.add.container(0, EPT.world.height);
-		var monetBg = this.add.sprite(0, 0, 'background').setOrigin(0, 0);
-		this.navbarMonet = this.add.sprite(0, 0, 'img-navbar').setOrigin(0);
+		var monetBg = EPT.strip(this, 'background', 0, true);
+		this.navbarMonet = EPT.strip(this, 'img-navbar', 0);
 		this.monetBack = new Button(10, 10, 'button-back', function(){this.clickBack('monetization');}, this, 'noframes').setOrigin(0, 0);
 		this.monetTitle = this.add.text(EPT.world.centerX, 45, EPT.text['monetization-title'], fontTitle).setOrigin(0.5, 0.5);
 		if(document.monetization && document.monetization.state === 'started') {
 			this.monetText1 = this.add.text(EPT.world.centerX, 170, EPT.text['monetization-thanks1'], fontSmall).setOrigin(0.5,0);
-			this.logoCoil = new Button(EPT.world.centerX, 390, 'logo-coil', this.clickCoil, this, 'noframes').setOrigin(0.5, 0.5);
-			this.monetText2 = this.add.text(EPT.world.centerX, 500, EPT.text['monetization-thanks2'], fontSmall).setOrigin(0.5,0);
-			this.containerMonet.add([monetBg,this.navbarMonet,this.monetBack,this.monetTitle,this.monetText1]);
+			this.logoCoil = new Button(EPT.world.centerX, wide ? 330 : 390, 'logo-coil', this.clickCoil, this, 'noframes').setOrigin(0.5, 0.5);
+			this.monetText2 = this.add.text(EPT.world.centerX, wide ? 430 : 500, EPT.text['monetization-thanks2'], fontSmall).setOrigin(0.5,0);
+			this.containerMonet.add(monetBg.concat(this.navbarMonet, [this.monetBack,this.monetTitle,this.monetText1]));
 			this.containerMonet.add([this.logoCoil,this.monetText2]);
 		}
 		else {
-			this.monetText1 = this.add.text(EPT.world.centerX, 170, EPT.text['monetization-description1'], fontSmall).setOrigin(0.5,0);
-			this.logoCoil = new Button(EPT.world.centerX, 390, 'logo-coil', this.clickCoil, this, 'noframes').setOrigin(0.5, 0.5);
-			this.monetText2 = this.add.text(EPT.world.centerX, 490, EPT.text['monetization-description2'], fontSmall).setOrigin(0.5,0);
-			this.bannerBeer = new Button(EPT.world.centerX, 660, 'button-beer', this.clickBeer, this, 'noframes').setOrigin(0.5, 0.5).setScale(1.25);
-			this.monetText3 = this.add.text(EPT.world.centerX, 760, EPT.text['monetization-description3'], fontSmall).setOrigin(0.5,0);
-			this.containerMonet.add([monetBg,this.navbarMonet,this.monetBack,this.monetTitle,this.monetText1]);
+			this.monetText1 = this.add.text(L, 170, EPT.text['monetization-description1'], fontSmall).setOrigin(0.5,0);
+			this.logoCoil = new Button(L, 390, 'logo-coil', this.clickCoil, this, 'noframes').setOrigin(0.5, 0.5);
+			this.monetText2 = this.add.text(L, 490, EPT.text['monetization-description2'], fontSmall).setOrigin(0.5,0);
+			this.bannerBeer = new Button(R, wide ? 330 : 660, 'button-beer', this.clickBeer, this, 'noframes').setOrigin(0.5, 0.5).setScale(1.25);
+			this.monetText3 = this.add.text(R, wide ? 440 : 760, EPT.text['monetization-description3'], fontSmall).setOrigin(0.5,0);
+			this.containerMonet.add(monetBg.concat(this.navbarMonet, [this.monetBack,this.monetTitle,this.monetText1]));
 			this.containerMonet.add([this.logoCoil,this.monetText2,this.bannerBeer,this.monetText3]);
 		}
 

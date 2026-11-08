@@ -40,7 +40,6 @@ class Game extends Phaser.Scene {
             clearTimeout(resizeTimer);
             window.removeEventListener('resize', onResize);
             window.removeEventListener('orientationchange', onResize);
-            EPT.setWorldSize(that, false);
         });
     }
     buildUI(wide) {

@@ -11,12 +11,7 @@ class Boot extends Phaser.Scene {
         WebFont.load({ custom: { families: ['montserratbold'], urls: ['fonts/montserrat-bold.css'] } });
     }
     create() {
-        EPT.world = {
-            width: this.cameras.main.width,
-            height: this.cameras.main.height,
-            centerX: this.cameras.main.centerX,
-            centerY: this.cameras.main.centerY
-        };
+        EPT.setWorldSize(this, EPT.isWide());
         EPT.Lang.updateLanguage();
         EPT.text = EPT.Lang.text[EPT.Lang.current];
         EPT._player = [];
