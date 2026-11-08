@@ -21,6 +21,7 @@ class Game extends Phaser.Scene {
                 this.playerTileCount[c] = 32;
             }
         }
+        if(EPT._oddsMode === undefined) { EPT._oddsMode = EPT.Storage.get('EPT-odds') === 3 ? 3 : 1; }
         this.freshCounts();
         if(saved) {
             EPT._currentTileCounts = saved.counts;
@@ -424,6 +425,7 @@ class Game extends Phaser.Scene {
     toggleOdds() {
         EPT.Sfx.play('click');
         EPT._oddsMode = EPT._oddsMode === 3 ? 1 : 3;
+        EPT.Storage.set('EPT-odds', EPT._oddsMode);
         this.oddsLabel.setText(this.oddsCaption());
         this.oddsLabel.x = Math.min(this.oddsLabel.x, EPT.world.width-4-this.oddsLabel.displayWidth/2);
         this.recalculatePercentages(1);

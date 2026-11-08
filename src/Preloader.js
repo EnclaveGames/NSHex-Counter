@@ -20,7 +20,7 @@ class Preloader extends Phaser.Scene {
 
 		var resources = {
 			'image': [
-				['background', 'img/background.png'],
+				['background', 'img/background.webp'],
 				['button-settings', 'img/button-settings.png'],
 				['img-tiles', 'img/img-tiles.png'],
 				['img-topbar', 'img/img-topbar.png'],
@@ -43,7 +43,7 @@ class Preloader extends Phaser.Scene {
 				['button-change-en', 'img/lang/en/button-change.png', {frameWidth:300,frameHeight:85}],
 
 				['loader', 'img/loader.png', {frameWidth:45,frameHeight:45}],
-				['tiles-hqs', 'img/tiles-hqs.png', {frameWidth:150,frameHeight:130}]
+				['tiles-hqs', 'img/tiles-hqs.webp', {frameWidth:150,frameHeight:130}]
 			]
 		};
 		for(var method in resources) {
