@@ -1,5 +1,5 @@
 // generated into sw.js by build.js - do not edit sw.js directly
-var VERSION = 'a12431480b';
+var VERSION = 'd62b98464c';
 var CACHE = 'nshex-counter-' + VERSION;
 var FILES = [
   "ept.webmanifest",

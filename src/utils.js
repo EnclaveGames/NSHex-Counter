@@ -95,9 +95,9 @@ EPT.fadeOutIn = function(passedCallback, context) {
     callbackScope: context
   });  
 }
-// landscape screens that are big enough (tablets, laptops, desktops) get both armies on one screen
+// any landscape screen (phones, tablets, laptops) gets both armies side by side; one army in a narrow strip is worse than two small ones
 EPT.isWide = function() {
-  return window.innerHeight >= 500 && window.innerWidth/window.innerHeight >= 1.25;
+  return window.innerHeight >= 200 && window.innerWidth/window.innerHeight >= 1.25;
 };
 
 EPT.setWorldSize = function(scene, wide) {
