@@ -1,5 +1,5 @@
 // generated into sw.js by build.js - do not edit sw.js directly
-var VERSION = 'b04fa59969';
+var VERSION = '0e54969b64';
 var CACHE = 'nshex-counter-' + VERSION;
 var FILES = [
   "ept.webmanifest",
@@ -36,6 +36,7 @@ var FILES = [
   "img/army-outpost.webp",
   "img/army-partisans.png",
   "img/army-pirates.webp",
+  "img/army-purifiers.webp",
   "img/army-sandrunners.png",
   "img/army-sharrash.webp",
   "img/army-smart.webp",
@@ -43,6 +44,7 @@ var FILES = [
   "img/army-troglodytes.png",
   "img/army-uranopolis.webp",
   "img/army-vegas.webp",
+  "img/army-wiremen.webp",
   "img/background-black.png",
   "img/background.webp",
   "img/banner-beer.png",

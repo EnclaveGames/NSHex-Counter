@@ -226,8 +226,8 @@ EPT.fadeOutScene = function(sceneName, context) {
 
 // used-up tiles and the inactive HQ use a darkened greyscale copy of the colour art, built once per army at runtime so no separate grey images are shipped
 EPT.armyNames = {
-  en: ['Moloch','Borgo','Outpost','Hegemony','New York','Neojungle','Smart','Vegas','Steel Police','Dancer','Sharrash','Mephisto','Doomsday','Mississippi','Uranopolis','Death Breath','Iron Gang','Sand Runners','Troglodytes','Beasts','Pirates','Merchants Guild','Partisans','Desert Tribes'],
-  pl: ['Moloch','Borgo','Posterunek','Hegemonia','Nowy Jork','Neodzungla','Smart','Vegas','Stalowa','Dancer','Sharrash','Mephisto','Doomsday','Misisipi','Uranopolis','Death Breath','Iron Gang','Sand Runners','Troglodyci','Bestie','Piraci','Gildia Kupców','Partyzanci','Ludzie Pustyni']
+  en: ['Moloch','Borgo','Outpost','Hegemony','New York','Neojungle','Smart','Vegas','Steel Police','Dancer','Sharrash','Mephisto','Doomsday','Mississippi','Uranopolis','Death Breath','Iron Gang','Sand Runners','Troglodytes','Beasts','Pirates','Merchants Guild','Partisans','Desert Tribes','Wiremen','Purifiers'],
+  pl: ['Moloch','Borgo','Posterunek','Hegemonia','Nowy Jork','Neodzungla','Smart','Vegas','Stalowa','Dancer','Sharrash','Mephisto','Doomsday','Misisipi','Uranopolis','Death Breath','Iron Gang','Sand Runners','Troglodyci','Bestie','Piraci','Gildia Kupców','Partyzanci','Ludzie Pustyni','Druciarze','Czyściciele']
 };
 EPT.labelKey = function(scene, id) {
   var lang = EPT.Lang.current, key = 'label-'+lang+'-'+id;

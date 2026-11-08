@@ -154,21 +154,24 @@ class MainMenu extends Phaser.Scene {
     showTiles(number) {
         this.tiles = this.add.container();
         var wide = EPT.world.width > 640;
-        var cols = wide ? 8 : 4;
-        var stepX = wide ? 150 : 140, stepY = wide ? 190 : 135;
-        var offsetLeft = (EPT.world.width-(cols-1)*stepX)/2;
+        var cols = wide ? 9 : 5;
+        var stepX = wide ? 138 : 124, stepY = wide ? 190 : 135;
+        var sc = wide ? 0.75 : 0.72;
+        var total = EPT._armies.length;
         var offsetTop = wide ? 230 : 180;
-        for(var i = 0; i < 24; i++) { // TODO: EPT._armies.length
-            var x = offsetLeft+(i%cols)*stepX;
-            var y = offsetTop+Math.floor(i/cols)*stepY;
+        for(var i = 0; i < total; i++) {
+            var row = Math.floor(i/cols);
+            var inRow = Math.min(cols, total-row*cols);
+            var x = EPT.world.width/2+((i%cols)-(inRow-1)/2)*stepX;
+            var y = offsetTop+row*stepY;
             var newButton = new Button(x, y, 'tiles-hqs', function(i){
                 return function(){
                     EPT._player[number] = i;
                     this.clickReturn(number);
                 }
-            }(i), this, 'noframes').setFrame(i).setScale(0.75);
-            var newBorder = this.add.sprite(x, y, 'hex-border-pattern').setScale(0.75);
-            var newLabel = this.add.image(x, y+60, EPT.labelKey(this, i)).setScale(0.75);
+            }(i), this, 'noframes').setFrame(i).setScale(sc);
+            var newBorder = this.add.sprite(x, y, 'hex-border-pattern').setScale(sc);
+            var newLabel = this.add.image(x, y+80*sc, EPT.labelKey(this, i)).setScale(sc);
             this.selection.add([newButton,newBorder,newLabel]);
         }
     }
@@ -345,6 +348,8 @@ class MainMenu extends Phaser.Scene {
                 ['army-merchantsguild', 'img/army-merchantsguild.webp', {frameWidth:150,frameHeight:130}],
                 ['army-partisans', 'img/army-partisans.png', {frameWidth:150,frameHeight:130}],
                 ['army-deserttribes', 'img/army-deserttribes.png', {frameWidth:150,frameHeight:130}],
+                ['army-wiremen', 'img/army-wiremen.webp', {frameWidth:150,frameHeight:130}],
+                ['army-purifiers', 'img/army-purifiers.webp', {frameWidth:150,frameHeight:130}],
                 
 				['button-support-en', 'img/lang/en/button-support.png', {frameWidth:300,frameHeight:85}],
 				['button-more-en', 'img/lang/en/button-more.png', {frameWidth:300,frameHeight:85}],
