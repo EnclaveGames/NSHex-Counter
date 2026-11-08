@@ -91,8 +91,8 @@ class Game extends Phaser.Scene {
             EPT.Sfx.play('change');
 
             this.tweens.killTweensOf([this.allTiles[1], this.allTiles[2]]);
-            this.tweens.add({targets: this.allTiles[1], x: tween[n][1], duration: 500, ease: 'Back'});
-            this.tweens.add({targets: this.allTiles[2], x: tween[n][2], duration: 500, ease: 'Back'});
+            this.tweens.add({targets: this.allTiles[1], x: tween[n][1], duration: 400, ease: 'Back'});
+            this.tweens.add({targets: this.allTiles[2], x: tween[n][2], duration: 400, ease: 'Back'});
 
             this.visibleScreen = n;
 
