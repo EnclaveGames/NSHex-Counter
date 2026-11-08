@@ -224,6 +224,29 @@ EPT.fadeOutScene = function(sceneName, context) {
   });
 };
 
+// used-up tiles and the inactive HQ use a darkened greyscale copy of the colour art, built once per army at runtime so no separate grey images are shipped
+EPT.greyKey = function(scene, key) {
+  var greyKey = key+'-grey';
+  if(scene.textures.exists(greyKey)) { return greyKey; }
+  var src = scene.textures.get(key);
+  var img = src.getSourceImage();
+  var canvas = scene.textures.createCanvas(greyKey, img.width, img.height);
+  var ctx = canvas.getContext();
+  ctx.drawImage(img, 0, 0);
+  var data = ctx.getImageData(0, 0, img.width, img.height);
+  var px = data.data;
+  for(var i = 0; i < px.length; i += 4) {
+    var v = (px[i]*0.299 + px[i+1]*0.587 + px[i+2]*0.114) * 0.85;
+    px[i] = px[i+1] = px[i+2] = v;
+  }
+  ctx.putImageData(data, 0, 0);
+  canvas.refresh();
+  src.getFrameNames().forEach(function(name) {
+    var f = src.get(name);
+    canvas.add(name, 0, f.cutX, f.cutY, f.cutWidth, f.cutHeight);
+  });
+  return greyKey;
+};
 class Button extends Phaser.GameObjects.Image {
   constructor(x, y, texture, callback, scene, noframes) { // noframes => frame
     super(scene, x, y, texture, 0);

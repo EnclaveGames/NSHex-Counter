@@ -167,7 +167,7 @@ class Game extends Phaser.Scene {
             var offsetTop = 0;
         }
         else {
-            var name = EPT._armies[EPT._player[n]]+'-grey';
+            var name = EPT.greyKey(this, 'army-'+EPT._armies[EPT._player[n]]).replace('army-','');
             var borderStyle = 'color';
             var currentScaleX = inactiveScaleX;
             var currentScaleY = inactiveScaleY;
@@ -297,7 +297,7 @@ class Game extends Phaser.Scene {
             this.tile[n][i].undo.setAlpha(0);
             this.tile[n][i].placeholder = this.add.sprite(newX+60*s, newY-30*s, 'button-undo', 3).setScale(s);
             if(tileCount[i-1] == 0) {
-                this.tile[n][i].button.setTexture('army-'+armyName+'-grey', i);
+                this.tile[n][i].button.setTexture(EPT.greyKey(this, 'army-'+armyName), i);
                 this.tile[n][i].dummy.setAlpha(0);
                 this.tile[n][i].bar.setFrame(3);
             }
@@ -330,11 +330,11 @@ class Game extends Phaser.Scene {
                 tile.dummy.setScale(s);
                 tile.dummy.setAlpha(1);
                 if(tileCount[i-1] == 0) {
-                    tile.button.setTexture('army-'+armyName+'-grey', i);
+                    tile.button.setTexture(EPT.greyKey(this, 'army-'+armyName), i);
                     this.tweens.add({targets: tile.dummy, alpha: 0, duration: 500, ease: 'Linear'});
                     tile.bar.setFrame(3);
                 }
-            }, onCompleteScope: this});
+            }, callbackScope: this});
 
             tile.undo.input.enabled = true;
             tile.undo.setAlpha(1);
@@ -487,7 +487,7 @@ class Game extends Phaser.Scene {
             this.popupOverlay.y = EPT.world.height;
             this.popupContainer.y = EPT.world.height;
             this.popupContainer.setScale(1);
-        }, onCompleteScope: this});
+        }, callbackScope: this});
         EPT.Sfx.play('click');
     }
 };

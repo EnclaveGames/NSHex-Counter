@@ -239,7 +239,7 @@ class MainMenu extends Phaser.Scene {
                     dummyStart.setAlpha(0.5);
                     this.tweens.add({targets: dummyStart, alpha: 0, duration: 350, ease: 'Linear', onComplete: function(){
                         dummyStart.destroy();
-                    }, onCompleteScope: this});
+                    }, callbackScope: this});
                     this.tweens.add({targets: this.buttonStart, alpha: 1, duration: 350, ease: 'Linear'});
                 },
                 callbackScope: this
@@ -320,30 +320,6 @@ class MainMenu extends Phaser.Scene {
                 ['text-areyousure-en', 'img/lang/en/text-areyousure.png']
             ],
 			'spritesheet': [
-				['army-moloch-grey', 'img/army-moloch-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-hegemony-grey', 'img/army-hegemony-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-borgo-grey', 'img/army-borgo-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-outpost-grey', 'img/army-outpost-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-dancer-grey', 'img/army-dancer-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-vegas-grey', 'img/army-vegas-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-smart-grey', 'img/army-smart-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-steelpolice-grey', 'img/army-steelpolice-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-neojungle-grey', 'img/army-neojungle-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-newyork-grey', 'img/army-newyork-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-sharrash-grey', 'img/army-sharrash-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-mephisto-grey', 'img/army-mephisto-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-doomsday-grey', 'img/army-doomsday-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-mississippi-grey', 'img/army-mississippi-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-uranopolis-grey', 'img/army-uranopolis-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-deathbreath-grey', 'img/army-deathbreath-grey.png', {frameWidth:150,frameHeight:130}],
-				['army-irongang-grey', 'img/army-irongang-grey.png', {frameWidth:150,frameHeight:130}],
-                ['army-sandrunners-grey', 'img/army-sandrunners-grey.png', {frameWidth:150,frameHeight:130}],
-                ['army-troglodytes-grey', 'img/army-troglodytes-grey.png', {frameWidth:150,frameHeight:130}],
-                ['army-beasts-grey', 'img/army-beasts-grey.png', {frameWidth:150,frameHeight:130}],
-                ['army-pirates-grey', 'img/army-pirates-grey.png', {frameWidth:150,frameHeight:130}],
-                ['army-merchantsguild-grey', 'img/army-merchantsguild-grey.png', {frameWidth:150,frameHeight:130}],
-                ['army-partisans-grey', 'img/army-partisans-grey.png', {frameWidth:150,frameHeight:130}],
-                ['army-deserttribes-grey', 'img/army-deserttribes-grey.png', {frameWidth:150,frameHeight:130}],
 
 				['army-moloch', 'img/army-moloch.png', {frameWidth:150,frameHeight:130}],
 				['army-hegemony', 'img/army-hegemony.png', {frameWidth:150,frameHeight:130}],
@@ -397,7 +373,6 @@ class MainMenu extends Phaser.Scene {
 				['button-small', 'img/button-small2.png', {frameWidth:120,frameHeight:44}],
 				['button-undo', 'img/button-undo.png', {frameWidth:45,frameHeight:49}],
 
-				['tiles-hqs-grey', 'img/tiles-hqs-grey.png', {frameWidth:150,frameHeight:130}]                
             ],
 			'audio': [
 				['sound-click', ['sfx/audio-click.m4a','sfx/audio-click.mp3','sfx/audio-click.ogg']],
