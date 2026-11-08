@@ -75,6 +75,9 @@ class Game extends Phaser.Scene {
                 g.strokePath();
                 g.fillTriangle(R-16, R+10, R-6, R+2, R-6, R+18);
             },
+            odds: function(g) {
+                g.fillCircle(R-9, R+7, 6); g.fillCircle(R+9, R+7, 6); g.fillCircle(R, R-9, 6);
+            },
             restart: function(g) {
                 var r = 13, end = Math.PI*1.45;
                 g.beginPath();
@@ -119,6 +122,11 @@ class Game extends Phaser.Scene {
         this.buttonUndo = new Button(32, 86, 'icon-undo', this.undoLast, this, 'noframes').setScale(0.9);
         this.buttonRestart = new Button(32, 142, 'icon-restart', function(){ this.popupShow('restart'); }, this, 'noframes').setScale(0.9);
         this.updateUndoButton();
+        // portrait: keep clear of the second army's tile count in the top corner
+        var oddsY = wide ? 30 : 108;
+        this.buttonOdds = new Button(EPT.world.width-32, oddsY, 'icon-odds', this.toggleOdds, this, 'noframes').setScale(wide ? 0.9 : 0.8);
+        this.oddsLabel = this.add.text(EPT.world.width-32, oddsY+(wide ? 38 : 32), this.oddsCaption(), this.fontSmall).setOrigin(0.5, 0).setScale(0.55);
+        this.oddsLabel.x = Math.min(this.oddsLabel.x, EPT.world.width-4-this.oddsLabel.displayWidth/2);
 
         this.countNum = [];
         this.hq = [];
@@ -279,8 +287,7 @@ class Game extends Phaser.Scene {
             }(i), this, 'noframes').setFrame(i).setScale(s);
             this.tile[n][i].dummy = this.add.sprite(newX, newY, 'army-'+armyName, i).setScale(s);
             this.tile[n][i].border = this.add.sprite(newX, newY, 'hex-border-color').setScale(s);
-            var chance = Math.floor(((tileCount[i-1])/this.playerTileCount[n]).toFixed(2)*100);
-            this.tile[n][i].percent = this.add.text(newX-30*s, newY-60*s, chance+'%', this.fontMedium).setOrigin(0.5, 0.5).setScale(s);
+            this.tile[n][i].percent = this.add.text(newX-30*s, newY-60*s, this.chanceText(n, i), this.fontMedium).setOrigin(0.5, 0.5).setScale(s);
             this.tile[n][i].bar = this.add.sprite(newX, newY+70*s, 'button-small', 0).setScale(s);
             this.tile[n][i].count = this.add.text(newX, newY+67*s, tileCount[i-1]+' / '+EPT._tileCounts[EPT._player[n]][i-1], this.fontSmall).setOrigin(0.5, 0.5).setScale(s);
             this.tile[n][i].undo = new Button(newX+60*s, newY-30*s, 'button-undo', function(i){
@@ -405,12 +412,30 @@ class Game extends Phaser.Scene {
         this.showAllTiles(1);
         this.showAllTiles(2);
     }
+    chanceText(n, i) {
+        // single draw, or the chance of getting the tile at least once in the next 3 draws (a regular NS Hex turn)
+        var k = EPT._currentTileCounts[n][i-1], total = this.playerTileCount[n];
+        var draws = EPT._oddsMode === 3 ? Math.min(3, total) : 1;
+        if(!total || !k) { return '0%'; }
+        var miss = 1;
+        for(var j = 0; j < draws; j++) { miss *= Math.max(0, total-k-j)/(total-j); }
+        return Math.round((1-miss)*100)+'%';
+    }
+    toggleOdds() {
+        EPT.Sfx.play('click');
+        EPT._oddsMode = EPT._oddsMode === 3 ? 1 : 3;
+        this.oddsLabel.setText(this.oddsCaption());
+        this.oddsLabel.x = Math.min(this.oddsLabel.x, EPT.world.width-4-this.oddsLabel.displayWidth/2);
+        this.recalculatePercentages(1);
+        this.recalculatePercentages(2);
+    }
+    oddsCaption() {
+        return EPT._oddsMode === 3 ? EPT.text['odds-3'] : EPT.text['odds-1'];
+    }
     recalculatePercentages(n) {
         var tileCount = EPT._currentTileCounts[n];
         for(var i = 1; i <= EPT._armyCounts[EPT._player[n]]; i++) {
-            var chance = Math.floor(((tileCount[i-1])/this.playerTileCount[n]).toFixed(2)*100);
-            if(isNaN(chance)) { chance = 0; }
-            this.tile[n][i].percent.setText(chance+'%');
+            this.tile[n][i].percent.setText(this.chanceText(n, i));
         }
     }
 	stateRestart() {

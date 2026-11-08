@@ -368,6 +368,8 @@ Would you like to help translate\n\
 this app to your language?\n\
 Let us know at\n\
 nshex@enclavegames.com!',
+      'odds-1': 'next 1',
+      'odds-3': 'next 3',
       'support-title': 'Support us',
       'support-text1': '\
 NSHex Counter is free and has\n\
@@ -410,6 +412,8 @@ Enclave Games team.',
       'settings': 'Ustawienia',
       'language-title': 'Język',
       'language-help': '',
+      'odds-1': 'nast. 1',
+      'odds-3': 'nast. 3',
       'support-title': 'Wesprzyj nas',
       'support-text1': '\
 NSHex Counter jest darmowy\n\
