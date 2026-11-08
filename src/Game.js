@@ -62,6 +62,11 @@ class Game extends Phaser.Scene {
     createIcons() {
         var R = 28;
         var draw = {
+            home: function(g) {
+                g.fillTriangle(R, R-15, R-16, R-1, R+16, R-1);
+                g.fillRect(R-11, R-2, 22, 17);
+                g.fillStyle(0x1b1b1d, 1).fillRect(R-4, R+4, 8, 11);
+            },
             undo: function(g) {
                 g.beginPath();
                 g.moveTo(R-4, R-10); g.lineTo(R+4, R-10);
@@ -109,10 +114,10 @@ class Game extends Phaser.Scene {
             this.add.sprite(t*640, -100, 'img-tabbar').setOrigin(0, 0);
         }
 
-        this.buttonBack = new Button(0, 0, 'button-home', function(){ this.popupShow('home'); }, this, 'noframes');
-        this.buttonBack.setOrigin(0, 0);
-        this.buttonUndo = new Button(36, 105, 'icon-undo', this.undoLast, this, 'noframes');
-        this.buttonRestart = new Button(36, 170, 'icon-restart', function(){ this.popupShow('restart'); }, this, 'noframes');
+        // a column of round buttons in the free space left of the first army, above the tiles
+        this.buttonBack = new Button(32, 30, 'icon-home', function(){ this.popupShow('home'); }, this, 'noframes').setScale(0.9);
+        this.buttonUndo = new Button(32, 86, 'icon-undo', this.undoLast, this, 'noframes').setScale(0.9);
+        this.buttonRestart = new Button(32, 142, 'icon-restart', function(){ this.popupShow('restart'); }, this, 'noframes').setScale(0.9);
         this.updateUndoButton();
 
         this.countNum = [];
