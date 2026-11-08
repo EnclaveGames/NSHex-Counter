@@ -1,5 +1,5 @@
 // generated into sw.js by build.js - do not edit sw.js directly
-var VERSION = 'a051f2275a';
+var VERSION = 'b04fa59969';
 var CACHE = 'nshex-counter-' + VERSION;
 var FILES = [
   "ept.webmanifest",
@@ -10,6 +10,8 @@ var FILES = [
   "fonts/BRLNSDB.svg",
   "fonts/BRLNSDB.ttf",
   "fonts/BRLNSDB.woff",
+  "fonts/chakra-petch-bold.ttf",
+  "fonts/chakra-petch.css",
   "fonts/montserrat-bold.css",
   "fonts/montserrat-bold.eot",
   "fonts/montserrat-bold.svg",
@@ -81,7 +83,6 @@ var FILES = [
   "img/lang/en/button-start.png",
   "img/lang/en/button-support.png",
   "img/lang/en/button-yes.png",
-  "img/lang/en/hex-labels.png",
   "img/lang/en/text-areyousure.png",
   "img/lang/pl/button-change.png",
   "img/lang/pl/button-copyright.png",
@@ -95,7 +96,6 @@ var FILES = [
   "img/lang/pl/button-start.png",
   "img/lang/pl/button-support.png",
   "img/lang/pl/button-yes.png",
-  "img/lang/pl/hex-labels.png",
   "img/lang/pl/text-areyousure.png",
   "img/loader.png",
   "img/loading-background.png",

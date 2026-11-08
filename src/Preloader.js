@@ -30,13 +30,11 @@ class Preloader extends Phaser.Scene {
 				['hex-shadow', 'img/hex-shadow.png']
 			],
 			'spritesheet': [
-				['hex-labels-pl', 'img/lang/pl/hex-labels.png', {frameWidth:170,frameHeight:35}],
 				['button-start-pl', 'img/lang/pl/button-start.png', {frameWidth:450,frameHeight:128}],
 				['button-player1-pl', 'img/lang/pl/button-player1.png', {frameWidth:300,frameHeight:85}],
 				['button-player2-pl', 'img/lang/pl/button-player2.png', {frameWidth:300,frameHeight:85}],
 				['button-change-pl', 'img/lang/pl/button-change.png', {frameWidth:300,frameHeight:85}],
 
-				['hex-labels-en', 'img/lang/en/hex-labels.png', {frameWidth:170,frameHeight:35}],
 				['button-start-en', 'img/lang/en/button-start.png', {frameWidth:450,frameHeight:128}],
 				['button-player1-en', 'img/lang/en/button-player1.png', {frameWidth:300,frameHeight:85}],
 				['button-player2-en', 'img/lang/en/button-player2.png', {frameWidth:300,frameHeight:85}],

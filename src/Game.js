@@ -215,7 +215,7 @@ class Game extends Phaser.Scene {
                 this.renderHQ(2, this.activeHQ[2]);
             }
         }, this, 'noframes').setOrigin(0.5);
-        this.hqLabel[n] = this.add.sprite(x, y+65, 'hex-labels-'+EPT.Lang.current, id+1).setOrigin(0.5);//.setScale(1.1);
+        this.hqLabel[n] = this.add.image(x, y+65, EPT.labelKey(this, id)).setOrigin(0.5);//.setScale(1.1);
         this.countNum[n] = this.add.text(x+65, y-45, this.playerTileCount[n], this.fontTitle).setOrigin(0.5);
         this.hq[n].add([this.hqShadow[n],this.hqBorder[n],this.hqTile[n],this.hqLabel[n],this.countNum[n]]);
         

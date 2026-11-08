@@ -168,7 +168,7 @@ class MainMenu extends Phaser.Scene {
                 }
             }(i), this, 'noframes').setFrame(i).setScale(0.75);
             var newBorder = this.add.sprite(x, y, 'hex-border-pattern').setScale(0.75);
-            var newLabel = this.add.sprite(x, y+60, 'hex-labels-'+EPT.Lang.current, i+1).setScale(0.75);
+            var newLabel = this.add.image(x, y+60, EPT.labelKey(this, i)).setScale(0.75);
             this.selection.add([newButton,newBorder,newLabel]);
         }
     }

@@ -225,6 +225,35 @@ EPT.fadeOutScene = function(sceneName, context) {
 };
 
 // used-up tiles and the inactive HQ use a darkened greyscale copy of the colour art, built once per army at runtime so no separate grey images are shipped
+EPT.armyNames = {
+  en: ['Moloch','Borgo','Outpost','Hegemony','New York','Neojungle','Smart','Vegas','Steel Police','Dancer','Sharrash','Mephisto','Doomsday','Mississippi','Uranopolis','Death Breath','Iron Gang','Sand Runners','Troglodytes','Beasts','Pirates','Merchants Guild','Partisans','Desert Tribes'],
+  pl: ['Moloch','Borgo','Posterunek','Hegemonia','Nowy Jork','Neodzungla','Smart','Vegas','Stalowa','Dancer','Sharrash','Mephisto','Doomsday','Misisipi','Uranopolis','Death Breath','Iron Gang','Sand Runners','Troglodyci','Bestie','Piraci','Gildia Kupców','Partyzanci','Ludzie Pustyni']
+};
+EPT.labelKey = function(scene, id) {
+  var lang = EPT.Lang.current, key = 'label-'+lang+'-'+id;
+  if(scene.textures.exists(key)) { return key; }
+  var W = 170, H = 35, S = 1;
+  var canvas = scene.textures.createCanvas(key, W*S, H*S);
+  var ctx = canvas.getContext();
+  ctx.scale(S, S);
+  var g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#2e2b2b'); g.addColorStop(1, '#1a1818');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  var name = (EPT.armyNames[lang] || EPT.armyNames.en)[id].toUpperCase();
+  var size = 17;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff';
+  do {
+    ctx.font = 'bold '+size+'px chakrapetch, Arial';
+    ctx.letterSpacing = (size >= 14 ? 2 : 1)+'px';
+    size--;
+  } while(ctx.measureText(name).width > W-16 && size > 8);
+  ctx.fillText(name, W/2+1, H/2+1);
+  ctx.letterSpacing = '0px';
+  canvas.refresh();
+  scene.textures.get(key).source[0].setFilter(1);
+  return key;
+};
 EPT.greyKey = function(scene, key) {
   var greyKey = key+'-grey';
   if(scene.textures.exists(greyKey)) { return greyKey; }

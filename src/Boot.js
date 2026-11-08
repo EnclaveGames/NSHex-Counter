@@ -8,7 +8,7 @@ class Boot extends Phaser.Scene {
         this.load.spritesheet('logo-counter', 'img/logo-counter.png', {frameWidth:446,frameHeight:123});
         this.load.spritesheet('logo-enclave', 'img/logo-enclave.png', {frameWidth:253,frameHeight:89});
 
-        WebFont.load({ custom: { families: ['montserratbold'], urls: ['fonts/montserrat-bold.css'] } });
+        WebFont.load({ custom: { families: ['montserratbold','chakrapetch'], urls: ['fonts/montserrat-bold.css','fonts/chakra-petch.css'] } });
     }
     create() {
         EPT.setWorldSize(this, EPT.isWide());
