@@ -75,6 +75,8 @@ class MainMenu extends Phaser.Scene {
 		this.buttonPlayer2.setScale(0.5);
         this.tweens.add({targets: this.buttonPlayer2, scaleX: 1, scaleY: 1, duration: 500, delay: 125, ease: 'Cubic.easeOut' });
 
+        this.initResume(wide);
+
         var tiles = this.add.sprite(this.pos.tiles.x, this.pos.tiles.y, 'img-tiles');
         tiles.setOrigin(0.5, 0.5);
 
@@ -92,11 +94,48 @@ class MainMenu extends Phaser.Scene {
             }, this);
         }
     }
+    initResume(wide) {
+        this.saved = EPT.SaveGame.load();
+        if(!this.saved) { return; }
+        var w = 400, h = 60;
+        if(!this.textures.exists('btn-resume')) {
+            var g = this.make.graphics({x: 0, y: 0, add: false});
+            g.fillStyle(0x1b1b1d, 1).fillRoundedRect(0, 0, w, h, 16);
+            g.lineStyle(4, 0xfdb535, 1).strokeRoundedRect(2, 2, w-4, h-4, 14);
+            g.generateTexture('btn-resume', w, h);
+            g.destroy();
+        }
+        var x = wide ? 960 : EPT.world.centerX;
+        var y = wide ? 620 : 612;
+        this.buttonResume = new Button(x, y, 'btn-resume', this.clickResume, this, 'noframes').setOrigin(0.5);
+        var font = { font: EPT.text['STYLE']+'30px '+EPT.text['FONT'], fill: '#fff', align: 'center' };
+        this.resumeParts = [this.buttonResume, this.add.text(x, y, EPT.text['menu-resume'], font).setOrigin(0.5)];
+        for(var n = 1; n <= 2; n++) {
+            var hx = x+(n == 1 ? -1 : 1)*(w/2-45);
+            this.resumeParts.push(this.add.sprite(hx, y-1, 'hex-border-color').setScale(0.36));
+            this.resumeParts.push(this.add.sprite(hx, y-1, 'tiles-hqs', this.saved.player[n]).setScale(0.36));
+        }
+        this.setResumeReady(this.bgFilesLoaded);
+    }
+    setResumeReady(ready) {
+        if(!this.buttonResume || !this.buttonResume.scene) { return; }
+        this.resumeParts.forEach(function(part) { part.setAlpha(ready ? 1 : 0.5); });
+        this.buttonResume.input.enabled = ready;
+    }
+    clickResume() {
+        if(!this.bgFilesLoaded || !this.saved) { return; }
+        EPT.Sfx.play('click');
+        EPT._player[1] = this.saved.player[1];
+        EPT._player[2] = this.saved.player[2];
+        EPT._resume = this.saved;
+        EPT.fadeOutScene('Game', this);
+    }
     initArmySelection(number) {
         this.selection = this.add.container(EPT.world.centerX, EPT.world.centerY-200+number*100);
         this.selection.setScale(0);
         this.buttonPlayer1.input.enabled = false;
         this.buttonPlayer2.input.enabled = false;
+        if(this.buttonResume) { this.buttonResume.input.enabled = false; }
         this.selectionBackground = EPT.strip(this, 'background', 0, true);
         this.selectionNavbar = EPT.strip(this, 'img-navbar', 0);
         var fontTitle = { font: EPT.text['STYLE']+'40px '+EPT.text['FONT'], fill: '#fff', align: 'center' };
@@ -256,6 +295,7 @@ class MainMenu extends Phaser.Scene {
         }
         this.buttonPlayer1.input.enabled = true;
         this.buttonPlayer2.input.enabled = true;
+        this.setResumeReady(this.bgFilesLoaded);
     }
     startPreloadInTheBackground() {
         this.load.image('img/button-home');
@@ -377,6 +417,7 @@ class MainMenu extends Phaser.Scene {
         this.load.on('complete', function(){
             console.log('[NSHex Counter] All files loaded in the background.');
             this.bgFilesLoaded = true;
+            this.setResumeReady(true);
             EPT.Sfx.manage('music', 'init', this);
             EPT.Sfx.manage('sound', 'init', this);
             if(this.waitingForSettings) {

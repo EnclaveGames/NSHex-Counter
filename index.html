@@ -13,7 +13,12 @@
 	<meta property="og:description" content="Count your (and your opponent's) tiles to know what you can expect to draw from the remaining ones." />
 	<meta property="og:type" content="website" />
 	<link rel="shortcut icon" href="favicon.png" />
-	<!-- <link rel="manifest" href="ept.webmanifest" /> -->
+	<link rel="manifest" href="ept.webmanifest" />
+	<link rel="apple-touch-icon" href="icons/icon-192.png" />
+	<meta name="theme-color" content="#1b1b1d" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-title" content="NSHex Counter" />
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-WCX5YHRP3N"></script>
 	<script src="src/plugins/webfont.js"></script>
 	<script src="src/phaser.4.2.1.min.js"></script>
@@ -21,5 +26,6 @@
 </head>
 <body>
 <script src="src/start.js"></script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 </body>
 </html>

@@ -108,6 +108,72 @@ EPT.setWorldSize = function(scene, wide) {
   EPT.world = { width: width, height: height, centerX: width/2, centerY: height/2 };
 };
 
+// the running game survives reloads: armies, remaining tiles and the tap history
+EPT.SaveGame = {
+  key: 'EPT-game',
+  save: function(scene) {
+    try {
+      EPT.Storage.set(EPT.SaveGame.key, {
+        v: 1,
+        player: [0, EPT._player[1], EPT._player[2]],
+        counts: [0, EPT._currentTileCounts[1], EPT._currentTileCounts[2]],
+        total: [0, scene.playerTileCount[1], scene.playerTileCount[2]],
+        history: scene.history
+      });
+    } catch(e) {}
+  },
+  clear: function() {
+    try { EPT.Storage.remove(EPT.SaveGame.key); } catch(e) {}
+  },
+  load: function() {
+    try {
+      var d = EPT.Storage.get(EPT.SaveGame.key);
+      if(!d || d.v !== 1) { return null; }
+      for(var n = 1; n <= 2; n++) {
+        var army = d.player[n], max = EPT._tileCounts[army], counts = d.counts[n];
+        if(!(army >= 0 && army < EPT._armies.length) || !Array.isArray(counts) || counts.length !== max.length) { return null; }
+        for(var i = 0; i < max.length; i++) {
+          if(!(counts[i] >= 0 && counts[i] <= max[i])) { return null; }
+        }
+        if(!(d.total[n] >= 0 && d.total[n] <= 34)) { return null; }
+      }
+      d.history = Array.isArray(d.history) ? d.history.filter(function(h) {
+        return h && (h.n === 1 || h.n === 2) && h.i >= 1 && h.i <= EPT._armyCounts[d.player[h.n]];
+      }) : [];
+      return d;
+    } catch(e) { return null; }
+  }
+};
+
+// keeps the screen on while counting; browsers release the lock when the tab is hidden, so ask again on return
+EPT.WakeLock = {
+  lock: null,
+  active: false,
+  request: function() {
+    if(!EPT.WakeLock.active || !navigator.wakeLock || document.visibilityState !== 'visible') { return; }
+    navigator.wakeLock.request('screen').then(function(lock) {
+      EPT.WakeLock.lock = lock;
+      lock.addEventListener('release', function() {
+        if(EPT.WakeLock.lock === lock) { EPT.WakeLock.lock = null; }
+      });
+    }).catch(function() {});
+  },
+  start: function() {
+    if(EPT.WakeLock.active) { return; }
+    EPT.WakeLock.active = true;
+    document.addEventListener('visibilitychange', EPT.WakeLock.request);
+    EPT.WakeLock.request();
+  },
+  stop: function() {
+    EPT.WakeLock.active = false;
+    document.removeEventListener('visibilitychange', EPT.WakeLock.request);
+    if(EPT.WakeLock.lock) {
+      EPT.WakeLock.lock.release().catch(function() {});
+      EPT.WakeLock.lock = null;
+    }
+  }
+};
+
 // repeats a 640px wide image across the whole canvas, mirroring every other copy so the seams are not visible
 EPT.strip = function(scene, key, y, mirror) {
   var list = [];
@@ -287,6 +353,7 @@ EPT.Lang = {
       'FONT': 'montserratbold',
       'STYLE': '',
       'menu-intro': 'Choose both armies\nand start the game',
+      'menu-resume': 'Resume game',
       'settings': 'Settings',
       'language-title': 'Language',
       'language-help': '\
@@ -343,6 +410,7 @@ Enclave Games team.',
       'FONT': 'Arial',
       'STYLE': 'bold ',
       'menu-intro': 'Wybierz obie armie\ni zacznij grę',
+      'menu-resume': 'Wznów grę',
       'settings': 'Ustawienia',
       'language-title': 'Język',
       'language-help': '',

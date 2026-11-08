@@ -5,7 +5,10 @@ class Game extends Phaser.Scene {
     create() {
         this.gridSize = 190;
 
-        EPT._currentTileCounts = JSON.parse(JSON.stringify(EPT._tileCounts));
+        var saved = EPT._resume;
+        EPT._resume = null;
+        this.history = [];
+        this.createIcons();
 
         this.fontTitle = { font: EPT.text['STYLE']+'46px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 7, align: 'center' };
         this.fontSmall = { font: EPT.text['STYLE']+'28px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 4, align: 'center' };
@@ -18,6 +21,14 @@ class Game extends Phaser.Scene {
                 this.playerTileCount[c] = 32;
             }
         }
+        this.freshCounts();
+        if(saved) {
+            EPT._currentTileCounts = saved.counts;
+            this.playerTileCount = saved.total.slice();
+            this.history = saved.history;
+        }
+        EPT.SaveGame.save(this);
+        EPT.WakeLock.start();
 
         this.visibleScreen = 1; // or 2, used in the single-army (portrait) layout only
         this.buildUI(EPT.isWide());
@@ -40,7 +51,45 @@ class Game extends Phaser.Scene {
             clearTimeout(resizeTimer);
             window.removeEventListener('resize', onResize);
             window.removeEventListener('orientationchange', onResize);
+            EPT.WakeLock.stop();
         });
+    }
+    freshCounts() {
+        EPT._currentTileCounts = [0, 1, 2].map(function(n) {
+            return n ? JSON.parse(JSON.stringify(EPT._tileCounts[EPT._player[n]])) : 0;
+        });
+    }
+    createIcons() {
+        var R = 28;
+        var draw = {
+            undo: function(g) {
+                g.beginPath();
+                g.moveTo(R-4, R-10); g.lineTo(R+4, R-10);
+                g.arc(R+4, R, 10, -Math.PI/2, Math.PI/2, false);
+                g.lineTo(R-8, R+10);
+                g.strokePath();
+                g.fillTriangle(R-16, R+10, R-6, R+2, R-6, R+18);
+            },
+            restart: function(g) {
+                var r = 13, end = Math.PI*1.45;
+                g.beginPath();
+                g.arc(R, R, r, -Math.PI*0.2, end, false);
+                g.strokePath();
+                var px = R+r*Math.cos(end), py = R+r*Math.sin(end);
+                var tx = -Math.sin(end), ty = Math.cos(end), nx = Math.cos(end), ny = Math.sin(end);
+                g.fillTriangle(px+tx*9, py+ty*9, px-tx*2+nx*7, py-ty*2+ny*7, px-tx*2-nx*7, py-ty*2-ny*7);
+            }
+        };
+        for(var name in draw) {
+            if(this.textures.exists('icon-'+name)) { continue; }
+            var g = this.make.graphics({x: 0, y: 0, add: false});
+            g.fillStyle(0x1b1b1d, 1).fillCircle(R, R, R-2);
+            g.lineStyle(3, 0xfdb535, 1).strokeCircle(R, R, R-3);
+            g.lineStyle(5, 0xffffff, 1).fillStyle(0xffffff, 1);
+            draw[name](g);
+            g.generateTexture('icon-'+name, R*2, R*2);
+            g.destroy();
+        }
     }
     buildUI(wide) {
         this.wide = wide;
@@ -60,8 +109,11 @@ class Game extends Phaser.Scene {
             this.add.sprite(t*640, -100, 'img-tabbar').setOrigin(0, 0);
         }
 
-        this.buttonBack = new Button(0, 0, 'button-home', this.popupShow, this, 'noframes');
+        this.buttonBack = new Button(0, 0, 'button-home', function(){ this.popupShow('home'); }, this, 'noframes');
         this.buttonBack.setOrigin(0, 0);
+        this.buttonUndo = new Button(36, 105, 'icon-undo', this.undoLast, this, 'noframes');
+        this.buttonRestart = new Button(36, 170, 'icon-restart', function(){ this.popupShow('restart'); }, this, 'noframes');
+        this.updateUndoButton();
 
         this.countNum = [];
         this.hq = [];
@@ -209,7 +261,7 @@ class Game extends Phaser.Scene {
         this.layout = this.layout || [];
         this.layout[n] = layout;
         var s = layout.scale;
-        var tileCount = EPT._currentTileCounts[EPT._player[n]];
+        var tileCount = EPT._currentTileCounts[n];
         for(var i = 1; i <= count; i++) {
             this.tile[n][i] = {};
             var row = Math.floor((i-1)/layout.cols);
@@ -218,36 +270,7 @@ class Game extends Phaser.Scene {
             var newX = (640-inRow*layout.cellW)/2 + (col+0.5)*layout.cellW;
             var newY = layout.top + (row+0.5)*layout.cellH - 3*s;
             this.tile[n][i].button = new Button(newX, newY, 'army-'+armyName, function(i){
-                return function(){ // REMOVE i tile
-                    EPT.Sfx.play('kill');
-                    if(tileCount[i-1] > 0) {
-                        tileCount[i-1] -= 1;
-                        this.playerTileCount[n] -= 1;
-                        this.countNum[n].setText(this.playerTileCount[n]);
-
-                        this.tile[n][i].count.setText(tileCount[i-1]+' / '+EPT._tileCounts[EPT._player[n]][i-1]);
-
-                        var chance = Math.floor(((tileCount[i-1])/this.playerTileCount[n]).toFixed(2)*100);
-                        if(isNaN(chance)) { chance = 0; }
-                        this.tile[n][i].percent.setText(chance+'%');
-
-                        this.tweens.add({targets: this.tile[n][i].dummy, scaleX: 2*s, scaleY: 2*s, alpha: 0, duration: 500, ease: 'Linear', onComplete: function(){
-                            if(!this.tile || !this.tile[n] || !this.tile[n][i] || !this.tile[n][i].dummy.scene) { return; }
-                            this.tile[n][i].dummy.setScale(s);
-                            this.tile[n][i].dummy.setAlpha(1);
-                            if(tileCount[i-1] == 0) {
-                                this.tile[n][i].button.setTexture('army-'+armyName+'-grey', i);
-                                this.tweens.add({targets: this.tile[n][i].dummy, alpha: 0, duration: 500, ease: 'Linear'});
-                                this.tile[n][i].bar.setFrame(3);
-                            }
-                        }, onCompleteScope: this});
-
-                        this.tile[n][i].undo.input.enabled = true;
-                        this.tile[n][i].undo.setAlpha(1);
-                        this.tile[n][i].placeholder.setAlpha(0);
-                    }
-                    this.recalculatePercentages(n);
-                }
+                return function(){ this.removeTile(n, i); }
             }(i), this, 'noframes').setFrame(i).setScale(s);
             this.tile[n][i].dummy = this.add.sprite(newX, newY, 'army-'+armyName, i).setScale(s);
             this.tile[n][i].border = this.add.sprite(newX, newY, 'hex-border-color').setScale(s);
@@ -256,32 +279,7 @@ class Game extends Phaser.Scene {
             this.tile[n][i].bar = this.add.sprite(newX, newY+70*s, 'button-small', 0).setScale(s);
             this.tile[n][i].count = this.add.text(newX, newY+67*s, tileCount[i-1]+' / '+EPT._tileCounts[EPT._player[n]][i-1], this.fontSmall).setOrigin(0.5, 0.5).setScale(s);
             this.tile[n][i].undo = new Button(newX+60*s, newY-30*s, 'button-undo', function(i){
-                return function(){ // UNDO i tile
-                    EPT.Sfx.play('heal');
-                    if(tileCount[i-1] < EPT._tileCounts[EPT._player[n]][i-1]) {
-                        tileCount[i-1] += 1;
-                        this.playerTileCount[n] += 1;
-                        this.countNum[n].setText(this.playerTileCount[n]);
-
-                        this.tile[n][i].count.setText(tileCount[i-1]+' / '+EPT._tileCounts[EPT._player[n]][i-1]);
-                        var chance = Math.floor(((tileCount[i-1])/this.playerTileCount[n]).toFixed(2)*100);
-                        if(isNaN(chance)) { chance = 0; }
-                        this.tile[n][i].percent.setText(chance+'%');
-
-                        this.tile[n][i].dummy.setScale(1.5*s);
-                        this.tile[n][i].dummy.setAlpha(0);
-                        this.tweens.add({targets: this.tile[n][i].dummy, scaleX: s, scaleY: s, alpha: 1, duration: 250, ease: 'Linear'});
-
-                        this.tile[n][i].button.setTexture('army-'+armyName, i);
-                        this.tile[n][i].bar.setFrame(0);
-                    }
-                    if(tileCount[i-1] == EPT._tileCounts[EPT._player[n]][i-1]) {
-                        this.tile[n][i].undo.input.enabled = false;
-                        this.tile[n][i].undo.setAlpha(0);
-                        this.tile[n][i].placeholder.setAlpha(1);
-                    }
-                    this.recalculatePercentages(n);
-                }
+                return function(){ this.restoreTile(n, i); }
             }(i), this).setScale(s);
             this.tile[n][i].undo.input.enabled = false;
             this.tile[n][i].undo.setAlpha(0);
@@ -302,6 +300,97 @@ class Game extends Phaser.Scene {
                 this.tile[n][i].undo,this.tile[n][i].placeholder]);
         }
     }
+    removeTile(n, i) {
+        EPT.Sfx.play('kill');
+        var tileCount = EPT._currentTileCounts[n];
+        var armyName = EPT._armies[EPT._player[n]];
+        var s = this.layout[n].scale;
+        var tile = this.tile[n][i];
+        if(tileCount[i-1] > 0) {
+            tileCount[i-1] -= 1;
+            this.playerTileCount[n] -= 1;
+            this.countNum[n].setText(this.playerTileCount[n]);
+            tile.count.setText(tileCount[i-1]+' / '+EPT._tileCounts[EPT._player[n]][i-1]);
+
+            this.tweens.add({targets: tile.dummy, scaleX: 2*s, scaleY: 2*s, alpha: 0, duration: 500, ease: 'Linear', onComplete: function(){
+                if(!this.tile || !this.tile[n] || this.tile[n][i] !== tile || !tile.dummy.scene) { return; }
+                tile.dummy.setScale(s);
+                tile.dummy.setAlpha(1);
+                if(tileCount[i-1] == 0) {
+                    tile.button.setTexture('army-'+armyName+'-grey', i);
+                    this.tweens.add({targets: tile.dummy, alpha: 0, duration: 500, ease: 'Linear'});
+                    tile.bar.setFrame(3);
+                }
+            }, onCompleteScope: this});
+
+            tile.undo.input.enabled = true;
+            tile.undo.setAlpha(1);
+            tile.placeholder.setAlpha(0);
+
+            this.history.push({n: n, i: i});
+            if(this.history.length > 200) { this.history.shift(); }
+            this.updateUndoButton();
+            EPT.SaveGame.save(this);
+        }
+        this.recalculatePercentages(n);
+    }
+    restoreTile(n, i) {
+        EPT.Sfx.play('heal');
+        var tileCount = EPT._currentTileCounts[n];
+        var armyName = EPT._armies[EPT._player[n]];
+        var s = this.layout[n].scale;
+        var tile = this.tile[n][i];
+        if(tileCount[i-1] < EPT._tileCounts[EPT._player[n]][i-1]) {
+            tileCount[i-1] += 1;
+            this.playerTileCount[n] += 1;
+            this.countNum[n].setText(this.playerTileCount[n]);
+            tile.count.setText(tileCount[i-1]+' / '+EPT._tileCounts[EPT._player[n]][i-1]);
+
+            tile.dummy.setScale(1.5*s);
+            tile.dummy.setAlpha(0);
+            this.tweens.add({targets: tile.dummy, scaleX: s, scaleY: s, alpha: 1, duration: 250, ease: 'Linear'});
+
+            tile.button.setTexture('army-'+armyName, i);
+            tile.bar.setFrame(0);
+
+            for(var h = this.history.length-1; h >= 0; h--) {
+                if(this.history[h].n === n && this.history[h].i === i) {
+                    this.history.splice(h, 1);
+                    break;
+                }
+            }
+            this.updateUndoButton();
+            EPT.SaveGame.save(this);
+        }
+        if(tileCount[i-1] == EPT._tileCounts[EPT._player[n]][i-1]) {
+            tile.undo.input.enabled = false;
+            tile.undo.setAlpha(0);
+            tile.placeholder.setAlpha(1);
+        }
+        this.recalculatePercentages(n);
+    }
+    undoLast() {
+        var last = this.history[this.history.length-1];
+        if(last) { this.restoreTile(last.n, last.i); }
+    }
+    updateUndoButton() {
+        var has = this.history.length > 0;
+        this.buttonUndo.setAlpha(has ? 1 : 0.35);
+        this.buttonUndo.input.enabled = has;
+    }
+    restartGame() {
+        var that = this;
+        this.time.delayedCall(30, function() {
+            that.freshCounts();
+            that.playerTileCount = [0, 34, 34];
+            for(var c = 1; c <= 2; c++) {
+                if(EPT._armies[EPT._player[c]] == 'dancer') { that.playerTileCount[c] = 32; }
+            }
+            that.history = [];
+            that.relayout(that.wide);
+            EPT.SaveGame.save(that);
+        });
+    }
     rerenderTiles() {
         this.allTiles[1].destroy();
         this.allTiles[2].destroy();
@@ -310,7 +399,7 @@ class Game extends Phaser.Scene {
         this.showAllTiles(2);
     }
     recalculatePercentages(n) {
-        var tileCount = EPT._currentTileCounts[EPT._player[n]];
+        var tileCount = EPT._currentTileCounts[n];
         for(var i = 1; i <= EPT._armyCounts[EPT._player[n]]; i++) {
             var chance = Math.floor(((tileCount[i-1])/this.playerTileCount[n]).toFixed(2)*100);
             if(isNaN(chance)) { chance = 0; }
@@ -323,6 +412,7 @@ class Game extends Phaser.Scene {
 	}
 	clickBack() {
         EPT.Sfx.play('click');
+        EPT.SaveGame.clear();
         EPT.fadeOutScene('MainMenu', this);
     }
     popupInit() {
@@ -331,11 +421,22 @@ class Game extends Phaser.Scene {
 		var popupBg = this.add.sprite(EPT.world.centerX, 200, 'popup-bg').setOrigin(0.5);
         var popupTitle = this.add.sprite(EPT.world.centerX, 130, 'text-areyousure-'+EPT.Lang.current).setOrigin(0.5);
         var popupText = this.add.text(EPT.world.centerX, 235, EPT.text['popup-lostprogress'], this.fontPopup).setOrigin(0.5);
-		var popupYes = new Button(EPT.world.centerX-100, 340, 'button-yes-'+EPT.Lang.current, function(){ this.clickBack(); }, this).setOrigin(0.5);
+		var popupYes = new Button(EPT.world.centerX-100, 340, 'button-yes-'+EPT.Lang.current, function(){ this.popupConfirm(); }, this).setOrigin(0.5);
 		var popupNo = new Button(EPT.world.centerX+100, 340, 'button-no-'+EPT.Lang.current, function(){ this.popupHide(); }, this).setOrigin(0.5);
 		this.popupContainer.add([popupBg,popupTitle,popupText,popupYes,popupNo]);
     }
-    popupShow() {
+    popupConfirm() {
+        if(this.popupAction == 'restart') {
+            EPT.Sfx.play('click');
+            this.popupHide();
+            this.restartGame();
+        }
+        else {
+            this.clickBack();
+        }
+    }
+    popupShow(action) {
+        this.popupAction = action;
         EPT.Sfx.play('click');
         // move to the right spot and animate in
         this.popupOverlay.y = 0;
