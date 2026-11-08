@@ -6,6 +6,22 @@
 // 	}
 // }
 
+// Phaser 3.52 throws when a pointer is released outside the canvas (pointer.camera is unset), which leaves the drag state stuck
+Phaser.Input.InputPlugin.prototype.sortGameObjects = function(gameObjects, pointer) {
+	if(gameObjects.length < 2) { return gameObjects; }
+	var renderList = (pointer.camera || this.cameras.main).renderList;
+	return gameObjects.sort(function(a, b) { return renderList.indexOf(b) - renderList.indexOf(a); });
+};
+
+// An exception inside a frame would otherwise stop requestAnimationFrame for good and freeze the whole app
+(function() {
+	var step = Phaser.Core.TimeStep.prototype.step;
+	Phaser.Core.TimeStep.prototype.step = function(time) {
+		try { step.call(this, time); }
+		catch(e) { console.error(e); }
+	};
+})();
+
 var gameConfig = {
 	scale: {
 		mode: Phaser.Scale.FIT,

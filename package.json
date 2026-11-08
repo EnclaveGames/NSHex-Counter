@@ -1,0 +1,27 @@
+{
+  "name": "nshex-counter",
+  "version": "1.0.0",
+  "description": "Helper web app to count [Neuroshima Hex](https://neuroshimahex.pl/) board game tiles.",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "http-server -c-1 -p 8080 -o /index-dev.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EnclaveGames/NSHex-Counter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/EnclaveGames/NSHex-Counter/issues"
+  },
+  "homepage": "https://github.com/EnclaveGames/NSHex-Counter#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "javascript-obfuscator": "^5.10.0",
+    "terser": "^5.51.2"
+  }
+}

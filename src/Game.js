@@ -63,6 +63,7 @@ class Game extends Phaser.Scene {
                 gameObject.y = dragY;
                 var n = that.visibleScreen;
                 for(var i = 1; i < that.tile[n].length-1; i++) {
+                    if (!that.tile[n][i]) continue; // Safety check
                     that.tile[n][i].button.y = that.tile[n][i].offsetTop-that.gridSize+dragY;
                     that.tile[n][i].dummy.y = that.tile[n][i].offsetTop-that.gridSize+dragY;
                     that.tile[n][i].border.y = that.tile[n][i].offsetTop-that.gridSize+dragY;
@@ -79,6 +80,10 @@ class Game extends Phaser.Scene {
         this.dragEndPos = 0;
         this.dragDir = 0;
         this.input.on('dragstart', function(pointer, gameObject, dragX, dragY) {
+            if(that._scrollTween) {
+                that._scrollTween.stop();
+                that._scrollTween = null;
+            }
             that.dragStartPos = pointer.y;
         });
 
@@ -89,10 +94,16 @@ class Game extends Phaser.Scene {
         this.input.on('dragend', function(pointer, gameObject, dragX, dragY) {
             if(that.rowThresholdCount[that.visibleScreen] > 0) {
                 var n = that.visibleScreen;
+                
+                
                 that.dragEndPos = pointer.y;
                 that.dragDir = that.dragEndPos-that.dragStartPos;
                 that.dragStep = Math.round(that.dragDir/that.gridSize);
                 that.tilesTopPos[n] -= that.dragStep;
+
+                if (!that.tile[n] || !that.tile[n][1]) {
+                    return;
+                }
 
                 var newY = Math.floor(that.tile[n][1].button.y);
                 var snappedY = Phaser.Math.Snap.To(newY-that.gridTopOffset, that.gridSize);
@@ -110,7 +121,6 @@ class Game extends Phaser.Scene {
 
         this.buttonUp = new Button(-5, EPT.world.height+5, 'button-up', function(){
             if(this.rowThresholdCount[this.visibleScreen] && this.tilesTopPos[this.visibleScreen] < this.rowThresholdCount[this.visibleScreen]) {
-                EPT.Sfx.play('click');
                 this.tilesTopPos[this.visibleScreen]++;
                 var snappedYDiff = -that.gridSize;
                 var n = that.visibleScreen;
@@ -135,17 +145,47 @@ class Game extends Phaser.Scene {
         this.popupInit();
     }
     tweenAllTiles(n, snappedYDiff, that) {
-        that.tweens.add({targets: that.seethru[n], y: that.seethru[n].y+snappedYDiff, duration: 100, ease: 'Linear'});
-        for(var i = 1; i < that.tile[n].length-1; i++) {
-            that.tweens.add({targets: that.tile[n][i].button, y: that.tile[n][i].button.y+snappedYDiff, duration: 100, ease: 'Linear'});
-            that.tweens.add({targets: that.tile[n][i].dummy, y: that.tile[n][i].dummy.y+snappedYDiff, duration: 100, ease: 'Linear'});
-            that.tweens.add({targets: that.tile[n][i].border, y: that.tile[n][i].border.y+snappedYDiff, duration: 100, ease: 'Linear'});
-            that.tweens.add({targets: that.tile[n][i].percent, y: that.tile[n][i].percent.y+snappedYDiff, duration: 100, ease: 'Linear'});
-            that.tweens.add({targets: that.tile[n][i].bar, y: that.tile[n][i].bar.y+snappedYDiff, duration: 100, ease: 'Linear'});
-            that.tweens.add({targets: that.tile[n][i].count, y: that.tile[n][i].count.y+snappedYDiff, duration: 100, ease: 'Linear'});
-            that.tweens.add({targets: that.tile[n][i].undo, y: that.tile[n][i].undo.y+snappedYDiff, duration: 100, ease: 'Linear'});
-            that.tweens.add({targets: that.tile[n][i].placeholder, y: that.tile[n][i].placeholder.y+snappedYDiff, duration: 100, ease: 'Linear'});
+        // a scroll started mid-animation continues from the previous target instead of being dropped
+        var startY = that.seethru[n].y;
+        var endY = startY + snappedYDiff;
+        if(that._scrollTween) {
+            endY = that._scrollEndY + snappedYDiff;
+            that._scrollTween.stop();
+            that._scrollTween = null;
         }
+        that._scrollEndY = endY;
+
+        var moveTiles = function() {
+            for(var i = 1; i < that.tile[n].length; i++) {
+                var tile = that.tile[n][i];
+                if(!tile || !tile.button) { continue; }
+                var y = tile.offsetTop - that.gridSize + that.seethru[n].y;
+                tile.button.y = y;
+                tile.dummy.y = y;
+                tile.border.y = y;
+                tile.percent.y = y - 60;
+                tile.bar.y = y + 70;
+                tile.count.y = y + 67;
+                tile.undo.y = y - 30;
+                tile.placeholder.y = y - 30;
+            }
+        };
+        var progress = { value: 0 };
+        that._scrollTween = that.tweens.add({
+            targets: progress,
+            value: 1,
+            duration: 100,
+            ease: 'Linear',
+            onUpdate: function() {
+                that.seethru[n].y = startY + (endY - startY) * progress.value;
+                moveTiles();
+            },
+            onComplete: function() {
+                that.seethru[n].y = endY;
+                moveTiles();
+                that._scrollTween = null;
+            }
+        });
         this.updateScrollingButtons();
     }
     updateScrollingButtons() {
@@ -218,9 +258,12 @@ class Game extends Phaser.Scene {
         this.hqBorder[n] = this.add.sprite(x, y, 'hex-border-'+borderStyle).setOrigin(0.5);
         this.hqTile[n] = new Button(x, y, 'army-'+name, function(){
             EPT.Sfx.play('change');
+
+            this.tweens.killTweensOf([this.allTiles[1], this.allTiles[2]]);
             this.tweens.add({targets: this.allTiles[1], x: tween[n][1], duration: 500, ease: 'Back'});
             this.tweens.add({targets: this.allTiles[2], x: tween[n][2], duration: 500, ease: 'Back'});
-            this.visibleScreen = (this.visibleScreen == 1) ? 2 : 1;
+
+            this.visibleScreen = n;
 
             this.seethru[1].x = tween[n][1];
             this.seethru[2].x = tween[n][2];
@@ -305,6 +348,7 @@ class Game extends Phaser.Scene {
                                 this.tile[n][i].percent.setText(chance+'%');
 
                                 this.tweens.add({targets: this.tile[n][i].dummy, scaleX: 2, scaleY: 2, alpha: 0, duration: 500, ease: 'Linear', onComplete: function(){
+                                    if(!this.tile || !this.tile[n] || !this.tile[n][i] || !this.tile[n][i].dummy.scene) { return; }
                                     this.tile[n][i].dummy.setScale(1);
                                     this.tile[n][i].dummy.setAlpha(1);
                                     if(tileCount[i-1] == 0) {
