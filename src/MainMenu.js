@@ -258,8 +258,6 @@ class MainMenu extends Phaser.Scene {
 				['button-beer', 'img/button-beer.png'],
                 ['banner-beer', 'img/banner-beer.png'],
 				['button-back', 'img/button-back.png'],
-				['button-up', 'img/button-up.png'],
-				['button-down', 'img/button-down.png'],
                 ['button-home', 'img/button-home.png'],
 				['img-tabbar', 'img/img-tabbar.png'],
                 ['img-seethru', 'img/img-seethru.png'],
