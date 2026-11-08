@@ -260,7 +260,6 @@ class MainMenu extends Phaser.Scene {
 				['button-back', 'img/button-back.png'],
                 ['button-home', 'img/button-home.png'],
 				['img-tabbar', 'img/img-tabbar.png'],
-                ['img-seethru', 'img/img-seethru.png'],
                 ['overlay', 'img/overlay.png'],
                 ['popup-bg', 'img/popup-bg.png'],
                 ['logo-portalgames', 'img/logo-portalgames.png'],

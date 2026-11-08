@@ -3,16 +3,11 @@ class Game extends Phaser.Scene {
         super('Game');
     }
     create() {
-        this.add.sprite(0, 0, 'background').setOrigin(0, 0);
         this.gridSize = 190;
-        this.seethru = [];
-        this.seethru[1] = this.add.sprite(0, this.gridSize, 'img-seethru').setOrigin(0, 0);
-        this.seethru[2] = this.add.sprite(EPT.world.width, this.gridSize, 'img-seethru').setOrigin(0, 0);
 
         EPT._currentTileCounts = JSON.parse(JSON.stringify(EPT._tileCounts));
 
         this.fontTitle = { font: EPT.text['STYLE']+'46px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 7, align: 'center' };
-        var fontTitle = { font: EPT.text['STYLE']+'46px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 7, align: 'center' };
         this.fontSmall = { font: EPT.text['STYLE']+'28px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 4, align: 'center' };
         this.fontMedium = { font: EPT.text['STYLE']+'36px '+EPT.text['FONT'], fill: '#fff', stroke: '#000', strokeThickness: 5, align: 'center' };
         this.fontPopup  = { font: EPT.text['STYLE']+'24px '+EPT.text['FONT'], fill: '#000', stroke: '#fff', strokeThickness: 3, align: 'center' };
@@ -24,33 +19,78 @@ class Game extends Phaser.Scene {
             }
         }
 
+        this.visibleScreen = 1; // or 2, used in the single-army (portrait) layout only
+        this.buildUI(EPT.isWide());
+        this.cameras.main.fadeIn(250);
+
+        // laptops and tablets in landscape show both armies side by side; rotating the device or resizing the window switches layouts without losing the counts
+        var that = this;
+        var resizeTimer = null;
+        var onResize = function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if(that.sys && that.sys.isActive() && EPT.isWide() !== that.wide) {
+                    that.relayout(EPT.isWide());
+                }
+            }, 200);
+        };
+        window.addEventListener('resize', onResize);
+        window.addEventListener('orientationchange', onResize);
+        this.events.once('shutdown', function() {
+            clearTimeout(resizeTimer);
+            window.removeEventListener('resize', onResize);
+            window.removeEventListener('orientationchange', onResize);
+            EPT.setWorldSize(that, false);
+        });
+    }
+    buildUI(wide) {
+        this.wide = wide;
+        EPT.setWorldSize(this, wide);
+
+        var halves = wide ? 2 : 1;
+        for(var b = 0; b < halves; b++) {
+            this.add.sprite(b*640, 0, 'background').setOrigin(0, 0);
+        }
+
         this.allTiles = [];
         this.tile = [];
         this.showAllTiles(1);
         this.showAllTiles(2);
 
-        this.tabbar = this.add.sprite(0, -100, 'img-tabbar').setOrigin(0, 0);
+        for(var t = 0; t < halves; t++) {
+            this.add.sprite(t*640, -100, 'img-tabbar').setOrigin(0, 0);
+        }
 
-		this.buttonBack = new Button(0, 0, 'button-home', this.popupShow, this, 'noframes');
+        this.buttonBack = new Button(0, 0, 'button-home', this.popupShow, this, 'noframes');
         this.buttonBack.setOrigin(0, 0);
 
-        this.visibleScreen = 1; // or 2
         this.countNum = [];
-
         this.hq = [];
-        this.activeHQ = [0, 'active', ''];
-        this.add.text(EPT.world.centerX+40, 80, 'vs', this.fontMedium).setOrigin(0.5);
+        if(wide) {
+            this.activeHQ = [0, 'active', 'active'];
+        }
+        else {
+            this.activeHQ = (this.visibleScreen == 1) ? [0, 'active', ''] : [0, '', 'active'];
+        }
+        this.add.text(wide ? EPT.world.centerX : EPT.world.centerX+40, 80, 'vs', this.fontMedium).setOrigin(0.5);
 
         this.renderHQ(1, this.activeHQ[1]);
         this.renderHQ(2, this.activeHQ[2]);
 
-        this.cameras.main.fadeIn(250);
+        for(var n = 1; n <= 2; n++) {
+            this.allTiles[n].x = wide ? EPT.world.width/2*(n-1) : EPT.world.width*(n-this.visibleScreen);
+        }
 
         this.popupInit();
     }
+    relayout(wide) {
+        this.tweens.killAll();
+        this.children.list.slice().forEach(function(child) { child.destroy(); });
+        this.buildUI(wide);
+    }
     renderHQ(n, activeDefault) {
         var active = (activeDefault) ? activeDefault : this.activeHQ[n];
-        var x = (n == 1) ? 200 : 500;
+        var x = this.wide ? ((n == 1) ? 320 : 960) : ((n == 1) ? 200 : 500);
         var activeScaleX = 1, activeScaleY = 1;
         var inactiveScaleX = 1, inactiveScaleY = 1; // .75
 
@@ -88,6 +128,7 @@ class Game extends Phaser.Scene {
         this.hqShadow[n] = this.add.sprite(x, y, 'hex-shadow').setOrigin(0.5);
         this.hqBorder[n] = this.add.sprite(x, y, 'hex-border-'+borderStyle).setOrigin(0.5);
         this.hqTile[n] = new Button(x, y, 'army-'+name, function(){
+            if(this.wide) { return; }
             EPT.Sfx.play('change');
 
             this.tweens.killTweensOf([this.allTiles[1], this.allTiles[2]]);
@@ -95,9 +136,6 @@ class Game extends Phaser.Scene {
             this.tweens.add({targets: this.allTiles[2], x: tween[n][2], duration: 400, ease: 'Back'});
 
             this.visibleScreen = n;
-
-            this.seethru[1].x = tween[n][1];
-            this.seethru[2].x = tween[n][2];
 
             if(this.activeHQ[n] != 'active') {
                 this.hq[1].destroy();
@@ -150,21 +188,21 @@ class Game extends Phaser.Scene {
     getTilesLayout(count) {
         // every tile must fit on the screen at once, so pick the column count that allows the largest tile scale
         var areaTop = this.gridSize-5, areaHeight = EPT.world.height-areaTop-10;
+        var areaWidth = this.wide ? 610 : 640; // a half of the screen in landscape
         var cellNaturalW = 165, cellNaturalH = 175;
         var best = null;
-        for(var cols = 3; cols <= 5; cols++) {
+        for(var cols = 3; cols <= (this.wide ? 6 : 5); cols++) {
             var rows = Math.ceil(count/cols);
-            var cellW = EPT.world.width/cols, cellH = areaHeight/rows;
+            var cellW = areaWidth/cols, cellH = areaHeight/rows;
             var scale = Math.min(1, cellW/cellNaturalW, cellH/cellNaturalH);
             if(!best || scale > best.scale + 0.001) {
-                best = { cols: cols, rows: rows, cellW: cellW, cellH: cellH, scale: scale, top: areaTop };
+                best = { cols: cols, rows: rows, cellW: cellW, cellH: cellH, scale: scale, top: areaTop, width: areaWidth };
             }
         }
         return best;
     }
     showAllTiles(n) {
         this.allTiles[n] = this.add.container();
-        this.allTiles[n].x = EPT.world.width*(n-1);
         this.tile[n] = [];
         var armyName = EPT._armies[EPT._player[n]];
         var count = EPT._armyCounts[EPT._player[n]];
@@ -178,7 +216,7 @@ class Game extends Phaser.Scene {
             var row = Math.floor((i-1)/layout.cols);
             var col = (i-1)%layout.cols;
             var inRow = Math.min(layout.cols, count-row*layout.cols);
-            var newX = (EPT.world.width-inRow*layout.cellW)/2 + (col+0.5)*layout.cellW;
+            var newX = (640-inRow*layout.cellW)/2 + (col+0.5)*layout.cellW;
             var newY = layout.top + (row+0.5)*layout.cellH - 3*s;
             this.tile[n][i].button = new Button(newX, newY, 'army-'+armyName, function(i){
                 return function(){ // REMOVE i tile
@@ -249,6 +287,16 @@ class Game extends Phaser.Scene {
             this.tile[n][i].undo.input.enabled = false;
             this.tile[n][i].undo.setAlpha(0);
             this.tile[n][i].placeholder = this.add.sprite(newX+60*s, newY-30*s, 'button-undo', 3).setScale(s);
+            if(tileCount[i-1] == 0) {
+                this.tile[n][i].button.setTexture('army-'+armyName+'-grey', i);
+                this.tile[n][i].dummy.setAlpha(0);
+                this.tile[n][i].bar.setFrame(3);
+            }
+            if(tileCount[i-1] < EPT._tileCounts[EPT._player[n]][i-1]) {
+                this.tile[n][i].undo.input.enabled = true;
+                this.tile[n][i].undo.setAlpha(1);
+                this.tile[n][i].placeholder.setAlpha(0);
+            }
             this.allTiles[n].add([
                 this.tile[n][i].button,this.tile[n][i].dummy,this.tile[n][i].border,
                 this.tile[n][i].percent,this.tile[n][i].bar,this.tile[n][i].count,
@@ -279,7 +327,7 @@ class Game extends Phaser.Scene {
         EPT.fadeOutScene('MainMenu', this);
     }
     popupInit() {
-        this.popupOverlay = this.add.sprite(0, EPT.world.height, 'overlay').setOrigin(0, 0).setAlpha(0.75);
+        this.popupOverlay = this.add.sprite(0, EPT.world.height, 'overlay').setOrigin(0, 0).setDisplaySize(EPT.world.width, EPT.world.height).setAlpha(0.75);
         this.popupContainer = this.add.container(0, EPT.world.height);
 		var popupBg = this.add.sprite(EPT.world.centerX, 200, 'popup-bg').setOrigin(0.5);
         var popupTitle = this.add.sprite(EPT.world.centerX, 130, 'text-areyousure-'+EPT.Lang.current).setOrigin(0.5);

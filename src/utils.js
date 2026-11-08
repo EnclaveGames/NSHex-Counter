@@ -95,6 +95,19 @@ EPT.fadeOutIn = function(passedCallback, context) {
     callbackScope: context
   });  
 }
+// landscape screens that are big enough (tablets, laptops, desktops) get both armies on one screen
+EPT.isWide = function() {
+  return window.innerHeight >= 500 && window.innerWidth/window.innerHeight >= 1.25;
+};
+
+EPT.setWorldSize = function(scene, wide) {
+  var width = wide ? 1280 : 640, height = wide ? 720 : 960;
+  if(scene.scale.width !== width || scene.scale.height !== height) {
+    scene.scale.setGameSize(width, height);
+  }
+  EPT.world = { width: width, height: height, centerX: width/2, centerY: height/2 };
+};
+
 EPT.fadeOutScene = function(sceneName, context) {
   context.cameras.main.fadeOut(250);
   context.time.addEvent({
